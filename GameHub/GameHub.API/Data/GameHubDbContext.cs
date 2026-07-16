@@ -16,6 +16,7 @@ public class GameHubDbContext : IdentityDbContext<ApplicationUser>
     //=============================
 
     public DbSet<Player> Players { get; set; } 
+    public DbSet<Game> Games { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
     public DbSet<SaveGame> SaveGames { get; set; }
@@ -24,6 +25,9 @@ public class GameHubDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(
+        typeof(GameHubDbContext).Assembly); // procura dentro do projeto todas as classe que implementam IEntityTypeConfiguration<T>
 
         modelBuilder.Entity<PlayerAchievement>()
             .HasKey(pa => new { pa.PlayerId, pa.AchievementId });
@@ -40,7 +44,7 @@ public class GameHubDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Player>()
             .HasOne(p => p.User) // player tem um usuario
-            .WithMany() // um usuario tem um player
+            .WithMany() // Um usuário pode possuir vários players.
             .HasForeignKey("UserId") //FK fica a tabela players
             .OnDelete(DeleteBehavior.SetNull); // se usuario for apagado, o player nao e apagado so fica sem usuario
     }
