@@ -16,11 +16,16 @@ public class GameHubDbContext : IdentityDbContext<ApplicationUser>
     //=============================
 
     public DbSet<Player> Players { get; set; } 
-    public DbSet<Game> Games { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
     public DbSet<SaveGame> SaveGames { get; set; }
     public DbSet<LeaderboardEntry> LeaderboardEntries { get; set; }
+    public DbSet<Game> Games { get; set; }
+    public DbSet<GameProduct> GameProducts { get; set; }
+    public DbSet<Purchase> Purchases { get; set; }
+    public DbSet<PurchaseItem> PurchaseItems { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
