@@ -101,7 +101,7 @@ ApplicationUser
 
 ### Swagger Overview
 
-![Swagger Overview](docs/images/swagger-overview.png)
+![Swagger Overview](GameHub/GameHub.API_2.0/docs/images/swagger-overview.png)
 
 ### Login e Geração de Token JWT
 
