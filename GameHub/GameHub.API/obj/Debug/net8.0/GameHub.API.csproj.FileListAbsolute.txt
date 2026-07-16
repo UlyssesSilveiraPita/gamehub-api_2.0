@@ -293,7 +293,6 @@ D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\staticw
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\staticwebassets.development.json
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\swae.build.ex.cache
-D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\GameHub..4AC48F33.Up2Date
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\GameHub.API.dll
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\refint\GameHub.API.dll
