@@ -1,4 +1,4 @@
-# 🎮 GameHub API
+# 🎮 GameHub API 2.0
 
 REST API for Game Services built with ASP.NET Core 8, Entity Framework Core, SQLite, Identity and JWT Authentication.
 
