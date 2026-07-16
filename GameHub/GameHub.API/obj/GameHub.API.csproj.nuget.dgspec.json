@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\GameHub.API.csproj": {}
+    "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\GameHub.API.csproj": {}
   },
   "projects": {
-    "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\GameHub.API.csproj": {
+    "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\GameHub.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\GameHub.API.csproj",
+        "projectUniqueName": "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\GameHub.API.csproj",
         "projectName": "GameHub.API",
-        "projectPath": "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\GameHub.API.csproj",
+        "projectPath": "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\GameHub.API.csproj",
         "packagesPath": "C:\\Users\\ulyss\\.nuget\\packages\\",
-        "outputPath": "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\obj\\",
+        "outputPath": "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -103,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

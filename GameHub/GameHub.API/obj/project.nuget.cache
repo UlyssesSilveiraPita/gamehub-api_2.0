@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/hP1CA2eQGU=",
+  "dgSpecHash": "MuYJClKORGk=",
   "success": true,
-  "projectFilePath": "D:\\freeCodeCamp.org\\gamehub-api\\GameHub\\GameHub.API\\GameHub.API.csproj",
+  "projectFilePath": "D:\\freeCodeCamp.org\\gamehub-api_2.0\\GameHub\\GameHub.API\\GameHub.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ulyss\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ulyss\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.28\\microsoft.aspnetcore.authentication.jwtbearer.8.0.28.nupkg.sha512",
