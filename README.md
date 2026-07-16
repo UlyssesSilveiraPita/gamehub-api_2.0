@@ -1,4 +1,4 @@
-# 🎮 GameHub API
+# 🎮 GameHub API 2.0
 
 REST API for Game Services built with ASP.NET Core 8, Entity Framework Core, SQLite, Identity and JWT Authentication.
 
@@ -101,27 +101,27 @@ ApplicationUser
 
 ### Swagger Overview
 
-![Swagger Overview](docs/images/swagger-overview.png)
+![Swagger Overview](GameHub/GameHub.API/docs/images/swagger-overview.png)
 
 ### Login e Geração de Token JWT
 
-![JWT Login](docs/images/auth-login-token.png)
+![JWT Login](GameHub/GameHub.API/docs/images/auth-login-token.png)
 
 ### Autorização no Swagger
 
-![Swagger Authorize](docs/images/swagger-authorize.png)
+![Swagger Authorize](GameHub/GameHub.API/docs/images/swagger-authorize.png)
 
 ### My Players
 
-![My Players](docs/images/my-players.png)
+![My Players](GameHub/GameHub.API/docs/images/my-players.png)
 
 ### My Saves
 
-![My Saves](docs/images/my-saves.png)
+![My Saves](GameHub/GameHub.API/docs/images/my-saves.png)
 
 ### Leaderboard Top 10
 
-![Leaderboard](docs/images/leaderboard-top10.png)
+![Leaderboard](GameHub/GameHub.API/docs/images/leaderboard-top10.png)
 
 ---
 
