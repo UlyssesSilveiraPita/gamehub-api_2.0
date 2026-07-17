@@ -25,9 +25,9 @@ com ASP.NET Core Web API e Blazor, seguindo boas práticas modernas de arquitetu
 # Roadmap
 
 - [x] Base da API
-- [ ] Documentação
+- [x] Documentação
 - [ ] Arquitetura
-- [ ] Pagamentos
+- [x] Pagamentos
 - [ ] Testes
 - [ ] Blazor
 - [ ] Docker
@@ -49,10 +49,10 @@ Preparar a evolução do GameHub 2.0 antes das mudanças estruturais e funcionai
 - [x] Validar build e execução da API
 - [x] Confirmar funcionamento do Swagger
 - [x] Criar pasta de documentação
-- [ ] Criar matriz de permissões
-- [ ] Criar registro de decisões técnicas
-- [ ] Atualizar o README da versão 2.0
-- [ ] Definir o domínio de compras e pagamentos
+- [x] Criar matriz de permissões
+- [x] Criar registro de decisões técnicas
+- [x] Atualizar o README da versão 2.0
+- [x] Definir o domínio de compras e pagamentos
 
 ### Critério de conclusão
 
@@ -69,18 +69,18 @@ Criar um módulo de compras digitais e pagamentos integrado ao domínio do GameH
 
 ### Entregas
 
-- [ ] Modelar produtos digitais
-- [ ] Modelar compras
-- [ ] Modelar pagamentos
-- [ ] Implementar estados de pagamento
-- [ ] Implementar intenção de pagamento
-- [ ] Implementar confirmação de pagamento
-- [ ] Implementar idempotência
-- [ ] Impedir pagamentos ativos duplicados
+- [x] Modelar produtos digitais
+- [x] Modelar compras
+- [x] Modelar pagamentos
+- [x] Implementar estados de pagamento
+- [x] Implementar intenção de pagamento
+- [x] Implementar confirmação de pagamento
+- [x] Implementar idempotência
+- [x] Impedir pagamentos ativos duplicados
 - [ ] Criar gateway de pagamento simulado
-- [ ] Criar endpoints de consulta
-- [ ] Aplicar autorização por usuário e administrador
-- [ ] Documentar endpoints no Swagger
+- [x] Criar endpoints de consulta
+- [x] Aplicar autorização por usuário e administrador
+- [x] Documentar endpoints no Swagger
 
 ### Critério de conclusão
 
@@ -101,14 +101,14 @@ Evoluir o projeto para uma arquitetura organizada, testável e com baixo acoplam
 - [ ] Criar projeto Domain
 - [ ] Criar projeto Application
 - [ ] Criar projeto Infrastructure
-- [ ] Manter a API como camada de apresentação
-- [ ] Separar regras de negócio dos controllers
+- [x] Manter a API como camada de apresentação
+- [x] Separar regras de negócio dos controllers
 - [ ] Criar interfaces de repositórios
 - [ ] Criar interfaces de gateways
-- [ ] Aplicar injeção de dependência
-- [ ] Aplicar DTOs de entrada e saída
+- [x] Aplicar injeção de dependência
+- [x] Aplicar DTOs de entrada e saída
 - [ ] Centralizar mapeamentos
-- [ ] Padronizar tratamento de erros
+- [x] Padronizar tratamento de erros
 
 ### Critério de conclusão
 
