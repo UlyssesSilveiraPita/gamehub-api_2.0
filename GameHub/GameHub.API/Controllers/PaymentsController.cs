@@ -122,6 +122,55 @@ public class PaymentsController : ControllerBase
         }
     }
 
+    [HttpPost("/api/payments/{paymentId:int}/fail")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(PaymentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaymentResponse>> FailPayment(
+    int paymentId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        try
+        {
+            var payment = await _paymentService.FailPaymentAsync(
+                paymentId,
+                userId);
+
+            var response = new PaymentResponse
+            {
+                Id = payment.Id,
+                PurchaseId = payment.PurchaseId,
+                Status = payment.Status.ToString(),
+                PaymentMethod = payment.PaymentMethod.ToString(),
+                Amount = payment.Amount,
+                Currency = payment.Currency,
+                IdempotencyKey = payment.IdempotencyKey,
+                ExternalTransactionId = payment.ExternalTransactionId,
+                CreatedAt = payment.CreatedAt
+            };
+
+            return Ok(response);
+        }
+        catch (KeyNotFoundException exception)
+        {
+            return NotFound(new
+            {
+                message = exception.Message
+            });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new
+            {
+                message = exception.Message
+            });
+        }
+    }
 
 }

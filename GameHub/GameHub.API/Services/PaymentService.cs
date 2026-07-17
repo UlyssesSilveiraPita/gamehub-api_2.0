@@ -2,6 +2,7 @@
 using GameHub.API.Entities;
 using GameHub.API.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace GameHub.API.Services;
 
@@ -74,6 +75,26 @@ public class PaymentService
         payment.MarkAsPaid(externalTransactionId);
         payment.Purchase.MarkAsPaid();
         
+        await _context.SaveChangesAsync();
+
+        return payment;
+    }
+
+    public async Task<Payment> FailPaymentAsync(
+    int paymentId,
+    string userId)
+    {
+        var payment = await _context.Payments
+            .Include(p => p.Purchase)
+            .FirstOrDefaultAsync(p =>
+                p.Id == paymentId &&
+                p.Purchase.UserId == userId);
+
+        if (payment is null)
+            throw new KeyNotFoundException("Payment not found.");
+
+        payment.MarkAsFailed();
+
         await _context.SaveChangesAsync();
 
         return payment;
