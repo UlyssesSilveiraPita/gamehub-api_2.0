@@ -299,3 +299,4 @@ D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\refint\
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\GameHub.API.pdb
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\GameHub.API.genruntimeconfig.cache
 D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\ref\GameHub.API.dll
+D:\freeCodeCamp.org\gamehub-api_2.0\GameHub\GameHub.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

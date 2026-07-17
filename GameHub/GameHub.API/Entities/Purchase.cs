@@ -20,9 +20,9 @@ public class Purchase
 
     public ApplicationUser User { get; set; } = null!;
 
-     public ICollection<PurchaseItem> Items { get; set; } = [];
+    public ICollection<PurchaseItem> Items { get; set; } = [];
 
-     public ICollection<Payment> Payments { get; set; } = [];
+    public ICollection<Payment> Payments { get; set; } = [];
 
 
     //=======================\\
@@ -61,5 +61,19 @@ public class Purchase
         Status = PurchaseStatus.Refunded;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void CalculateTotal()
+    {
+        TotalAmount = Items.Sum(item => item.TotalPrice);
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void AddItem(PurchaseItem item)
+    {
+        Items.Add(item);
+        CalculateTotal();
+    }
+
+
 
 }

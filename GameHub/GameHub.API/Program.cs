@@ -8,12 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
+using GameHub.API.Services;
+using GameHub.API.Data.Seed;
 
 SQLitePCL.Batteries.Init();
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<PurchaseService>();
+builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddDataProtection();
 
 builder.Services.AddDbContext<GameHubDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -95,6 +99,14 @@ builder.Services.AddSwaggerGen(optios =>
 });
 
 var app = builder.Build();
+
+// inicializando novo usuario e criacao de produtos caso nao tenha ainda \\
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+
+    await seeder.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
