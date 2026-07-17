@@ -1,4 +1,4 @@
-﻿namespace GameHub.API.Entities.Enums;
+﻿namespace GameHub.API.Enums;
 
 public enum GameProductType
 {

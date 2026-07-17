@@ -595,6 +595,56 @@
     ]
   },
   {
+    "ContainingType": "GameHub.API.Controllers.PaymentsController",
+    "Method": "CreatePayment",
+    "RelativePath": "api/purchases/{purchaseId}/payments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "purchaseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GameHub.API.Dtos.Payments.CreatePaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GameHub.API.Dtos.Payments.PaymentResponse",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
     "ContainingType": "GameHub.API.Controllers.SaveGamesController",
     "Method": "GetAll",
     "RelativePath": "api/SaveGames",

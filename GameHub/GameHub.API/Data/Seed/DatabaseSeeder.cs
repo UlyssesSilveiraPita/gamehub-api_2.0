@@ -1,5 +1,5 @@
 ﻿using GameHub.API.Entities;
-using GameHub.API.Entities.Enums;
+using GameHub.API.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

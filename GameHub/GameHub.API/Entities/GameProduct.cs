@@ -1,4 +1,4 @@
-﻿using GameHub.API.Entities.Enums;
+﻿using GameHub.API.Enums;
 
 namespace GameHub.API.Entities;
 

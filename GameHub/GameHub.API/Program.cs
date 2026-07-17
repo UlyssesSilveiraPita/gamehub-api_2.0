@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<PurchaseService>();
+builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddDataProtection();
 
