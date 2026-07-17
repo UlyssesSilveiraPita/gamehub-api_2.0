@@ -55,4 +55,29 @@ public class PaymentService
 
         return payment;
     }
+
+    public async Task<Payment> ApprovePaymentAsync(
+    int paymentId,
+    string userId)
+    {
+        var payment = await _context.Payments
+            .Include(p => p.Purchase)
+            .FirstOrDefaultAsync(p =>
+                p.Id == paymentId &&
+                p.Purchase.UserId == userId);
+
+        if (payment is null)
+            throw new KeyNotFoundException("Payment not found.");
+
+        var externalTransactionId = Guid.NewGuid().ToString();
+
+        payment.MarkAsPaid(externalTransactionId);
+        payment.Purchase.MarkAsPaid();
+        
+        await _context.SaveChangesAsync();
+
+        return payment;
+    }
+
+
 }

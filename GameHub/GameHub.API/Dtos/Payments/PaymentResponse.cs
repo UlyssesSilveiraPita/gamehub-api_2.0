@@ -17,4 +17,6 @@ public class PaymentResponse
     public string IdempotencyKey { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
+
+    public string? ExternalTransactionId { get; set; }
 }
