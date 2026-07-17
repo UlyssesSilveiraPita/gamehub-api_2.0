@@ -30,12 +30,18 @@ public class PaymentService
             throw new KeyNotFoundException("Purchase not found.");
 
         if (purchase.Status != PurchaseStatus.Pending)
+        {
             throw new InvalidOperationException(
                 "Only pending purchases can receive a payment.");
+        }
 
-        if (purchase.Payments.Any())
+        if (purchase.Payments.Any(p =>
+            p.Status == PaymentStatus.Pending ||
+            p.Status == PaymentStatus.Paid))
+        {
             throw new InvalidOperationException(
-                "This purchase already has a payment.");
+                "This purchase already has an active payment.");
+        }
 
         var payment = new Payment
         {
