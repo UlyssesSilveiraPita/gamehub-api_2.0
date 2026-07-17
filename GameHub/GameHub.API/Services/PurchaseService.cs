@@ -59,7 +59,29 @@ public class PurchaseService
 
     }
 
+    //pedido de compra do usuario\\
+    public async Task<Purchase?> GetPurchaseByIdAsync(
+        int purchaseId,
+        string userId)
+    {
+        return await _context.Purchases
+            .Include(p => p.Items) // trazer os itens junto da compra
+            .FirstOrDefaultAsync(p => 
+                p.Id == purchaseId && 
+                p.UserId == userId);
+    }
 
+    //lista todas as compras do usuario\\
+    public async Task<List<Purchase>> GetPurchasesByUserAsync(
+    string userId)
+    {
+        return await _context.Purchases
+            .AsNoTracking() //EF Core não precisa acompanhar as entidades.
+            .Include(p => p.Items)
+            .Where(p => p.UserId == userId)
+            .OrderByDescending(p => p.CreatedAt) // lista as compras do mais recente para o mais antigo
+            .ToListAsync();
+    }
 
 
 }

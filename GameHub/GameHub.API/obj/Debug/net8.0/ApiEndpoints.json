@@ -504,36 +504,91 @@
       {
         "Type": "GameHub.API.Dtos.Purchases.PurchaseResponse",
         "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
+          "application/json"
         ],
         "StatusCode": 201
       },
       {
         "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
+          "application/json"
         ],
         "StatusCode": 400
       },
       {
         "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
+          "application/json"
         ],
         "StatusCode": 401
       },
       {
         "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "GameHub.API.Controllers.PurchasesController",
+    "Method": "GetMyPurchases",
+    "RelativePath": "api/Purchases",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[GameHub.API.Dtos.Purchases.PurchaseResponse, GameHub.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "GameHub.API.Controllers.PurchasesController",
+    "Method": "GetPurchaseById",
+    "RelativePath": "api/Purchases/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GameHub.API.Dtos.Purchases.PurchaseResponse",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
         ],
         "StatusCode": 404
       }
