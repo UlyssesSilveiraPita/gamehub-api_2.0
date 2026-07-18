@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using GameHub.API.Data;
+using GameHub.API.Data.Seed;
 using GameHub.API.Entities;
+using GameHub.API.Services.Abstractions;
+using GameHub.API.Services.Authentication;
+using GameHub.API.Services.Commerce;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.DataProtection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
-using GameHub.API.Services;
-using GameHub.API.Data.Seed;
+using System.Text;
 
 SQLitePCL.Batteries.Init();
 
@@ -19,6 +21,8 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<PurchaseService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUserService>();
 builder.Services.AddDataProtection();
 
 builder.Services.AddDbContext<GameHubDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));

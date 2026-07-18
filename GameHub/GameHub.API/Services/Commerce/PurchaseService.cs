@@ -6,7 +6,7 @@ using GameHub.API.Enums;
 using GameHub.API.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameHub.API.Services;
+namespace GameHub.API.Services.Commerce;
 
 public class PurchaseService
 {

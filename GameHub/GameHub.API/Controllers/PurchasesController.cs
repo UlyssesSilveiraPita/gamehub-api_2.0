@@ -1,11 +1,9 @@
 ﻿using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
-using GameHub.API.Services;
-using GameHub.API.Enums;
+using GameHub.API.Services.Abstractions;
+using GameHub.API.Services.Commerce;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace GameHub.API.Controllers;
 
@@ -15,10 +13,14 @@ namespace GameHub.API.Controllers;
 public class PurchasesController : ControllerBase
 {
     private readonly PurchaseService _purchaseService;
+    private readonly ICurrentUser _currentUser;
 
-    public PurchasesController(PurchaseService purchaseService)
+    public PurchasesController(
+        PurchaseService purchaseService,
+        ICurrentUser currentUser)
     {
         _purchaseService = purchaseService;
+        _currentUser = currentUser;
     }
 
     [HttpPost]
@@ -28,9 +30,9 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PurchaseResponse>> CreatePurchase(
-    CreatePurchaseRequest request)
+        CreatePurchaseRequest request)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -74,7 +76,7 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PurchaseResponse>> GetPurchaseById(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
@@ -113,7 +115,7 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<List<PurchaseResponse>>> GetMyPurchases()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
@@ -148,9 +150,9 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>> GetHistory(
-    [FromQuery] PurchaseHistoryQuery query)
+        [FromQuery] PurchaseHistoryQuery query)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();

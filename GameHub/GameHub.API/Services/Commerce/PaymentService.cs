@@ -2,9 +2,8 @@
 using GameHub.API.Entities;
 using GameHub.API.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
-namespace GameHub.API.Services;
+namespace GameHub.API.Services.Commerce;
 
 public class PaymentService
 {
