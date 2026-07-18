@@ -171,3 +171,36 @@ A arquitetura será evoluída gradualmente, preservando estabilidade e facilitan
 
 ---
 
+## ADR-005 — Centralização do acesso ao usuário autenticado
+
+### Status
+
+Accepted
+
+### Contexto
+
+Os controllers estavam acessando diretamente as claims do usuário autenticado por meio de `HttpContext.User`.
+
+Esse padrão gerava repetição de código e fazia os controllers conhecerem detalhes da implementação de autenticação, como `ClaimTypes` e a estrutura do token JWT.
+
+### Decisão
+
+Foi criada a abstração:
+
+`ICurrentUser`
+
+E sua implementação:
+
+`CurrentUserService`
+
+A implementação utiliza `IHttpContextAccessor` para obter os dados do usuário autenticado na requisição atual.
+
+O serviço foi registrado com ciclo de vida `Scoped`, garantindo uma instância por requisição HTTP.
+
+### Consequências
+
+- Controllers deixam de acessar claims diretamente.
+- A leitura do usuário autenticado fica centralizada.
+- Mudanças futuras no mecanismo de autenticação ficam isoladas.
+- O código fica mais simples de testar.
+- Reduzimos duplicação e acoplamento com o ASP.NET Core.
