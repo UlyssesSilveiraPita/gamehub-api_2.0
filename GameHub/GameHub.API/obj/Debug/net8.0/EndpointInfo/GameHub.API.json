@@ -1225,6 +1225,13 @@
               "format": "int32",
               "default": 10
             }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/PurchaseStatus"
+            }
           }
         ],
         "responses": {
@@ -1884,6 +1891,16 @@
           }
         },
         "additionalProperties": false
+      },
+      "PurchaseStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "RegisterDto": {
         "required": [

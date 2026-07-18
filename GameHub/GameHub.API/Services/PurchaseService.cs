@@ -1,7 +1,8 @@
 ﻿using GameHub.API.Data;
-using GameHub.API.Dtos.Purchases;
 using GameHub.API.Dtos.Common;
+using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
+using GameHub.API.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameHub.API.Services;
@@ -88,11 +89,17 @@ public class PurchaseService
     public async Task<PagedResponse<PurchaseHistoryResponse>> GetPurchaseHistoryAsync(
     string userId,
     int page,
-    int pageSize)
+    int pageSize,
+    PurchaseStatus? status)
     {
         var query = _context.Purchases
             .AsNoTracking()
             .Where(p => p.UserId == userId);
+
+        if(status.HasValue)
+        {
+            query = query.Where(p => p.Status == status.Value);
+        }
 
         var totalItems = await query.CountAsync();
 

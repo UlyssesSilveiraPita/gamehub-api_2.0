@@ -1,6 +1,7 @@
 ﻿using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
 using GameHub.API.Services;
+using GameHub.API.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -147,7 +148,8 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>> GetHistory(
     [FromQuery] int page = 1,
-    [FromQuery] int pageSize = 10)
+    [FromQuery] int pageSize = 10,
+    [FromQuery] PurchaseStatus? status = null)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -171,7 +173,7 @@ public class PurchasesController : ControllerBase
         }
 
         var history = await _purchaseService
-            .GetPurchaseHistoryAsync(userId, page, pageSize);
+            .GetPurchaseHistoryAsync(userId, page, pageSize, status);
 
         return Ok(history);
     }
