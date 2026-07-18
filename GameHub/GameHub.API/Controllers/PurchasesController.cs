@@ -5,6 +5,7 @@ using GameHub.API.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace GameHub.API.Controllers;
 
@@ -147,16 +148,14 @@ public class PurchasesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>> GetHistory(
-    [FromQuery] int page = 1,
-    [FromQuery] int pageSize = 10,
-    [FromQuery] PurchaseStatus? status = null)
+    [FromQuery] PurchaseHistoryQuery query)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
 
-        if (page < 1)
+        if (query.Page < 1)
         {
             return BadRequest(new
             {
@@ -164,7 +163,7 @@ public class PurchasesController : ControllerBase
             });
         }
 
-        if (pageSize < 1 || pageSize > 100)
+        if (query.PageSize < 1 || query.PageSize > 100)
         {
             return BadRequest(new
             {
@@ -173,7 +172,7 @@ public class PurchasesController : ControllerBase
         }
 
         var history = await _purchaseService
-            .GetPurchaseHistoryAsync(userId, page, pageSize, status);
+            .GetPurchaseHistoryAsync(userId, query);
 
         return Ok(history);
     }

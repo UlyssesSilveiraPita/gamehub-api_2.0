@@ -743,17 +743,27 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "page",
+        "Name": "Page",
         "Type": "System.Int32",
         "IsRequired": false
       },
       {
-        "Name": "pageSize",
+        "Name": "PageSize",
         "Type": "System.Int32",
         "IsRequired": false
       },
       {
-        "Name": "status",
+        "Name": "Status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortDirection",
         "Type": "System.String",
         "IsRequired": false
       }

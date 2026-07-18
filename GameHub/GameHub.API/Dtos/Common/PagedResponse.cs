@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-
-namespace GameHub.API.Dtos.Common;
+﻿namespace GameHub.API.Dtos.Common;
 
 public class PagedResponse<T>
 {

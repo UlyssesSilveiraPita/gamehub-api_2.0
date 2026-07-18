@@ -3,6 +3,7 @@ using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
 using GameHub.API.Enums;
+using GameHub.API.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameHub.API.Services;
@@ -87,26 +88,21 @@ public class PurchaseService
     }
 
     public async Task<PagedResponse<PurchaseHistoryResponse>> GetPurchaseHistoryAsync(
-    string userId,
-    int page,
-    int pageSize,
-    PurchaseStatus? status)
+        string userId,
+        PurchaseHistoryQuery request)
     {
         var query = _context.Purchases
             .AsNoTracking()
             .Where(p => p.UserId == userId);
 
-        if(status.HasValue)
-        {
-            query = query.Where(p => p.Status == status.Value);
-        }
+        query = query.FilterByStatus(request.Status);
 
         var totalItems = await query.CountAsync();
 
+        query = query.ApplySorting(request.SortBy, request.SortDirection);
+
         var items = await query
-            .OrderByDescending(p => p.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .ApplyPagination(request.Page, request.PageSize)
             .Select(p => new PurchaseHistoryResponse
             {
                 Id = p.Id,
@@ -119,12 +115,12 @@ public class PurchaseService
             .ToListAsync();
 
         var totalPages = (int)Math.Ceiling(
-            totalItems / (double)pageSize);
+            totalItems / (double)request.PageSize);
 
         return new PagedResponse<PurchaseHistoryResponse>
         {
-            Page = page,
-            PageSize = pageSize,
+            Page = request.Page,
+            PageSize = request.PageSize,
             TotalItems = totalItems,
             TotalPages = totalPages,
             Items = items

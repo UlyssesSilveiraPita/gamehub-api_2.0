@@ -1209,28 +1209,40 @@
         ],
         "parameters": [
           {
-            "name": "page",
+            "name": "Page",
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
-            "name": "pageSize",
+            "name": "PageSize",
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
             }
           },
           {
-            "name": "status",
+            "name": "Status",
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/PurchaseStatus"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDirection",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],
