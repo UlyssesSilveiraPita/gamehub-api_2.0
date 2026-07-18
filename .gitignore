@@ -55,3 +55,25 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# .NET build
+bin/
+obj/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# Local configuration and secrets
+appsettings.Local.json
+.env
+
+# Logs
+logs/
+*.log
