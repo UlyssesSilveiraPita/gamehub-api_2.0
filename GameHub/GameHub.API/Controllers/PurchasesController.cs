@@ -1,8 +1,9 @@
-﻿using GameHub.API.Dtos.Purchases;
+﻿using GameHub.API.Dtos.Common;
+using GameHub.API.Dtos.Purchases;
 using GameHub.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 
 namespace GameHub.API.Controllers;
 
@@ -140,18 +141,37 @@ public class PurchasesController : ControllerBase
     [HttpGet("history")]
     [Produces("application/json")]
     [ProducesResponseType(
-    typeof(List<PurchaseHistoryResponse>),
+    typeof(PagedResponse<PurchaseHistoryResponse>),
     StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<List<PurchaseHistoryResponse>>> GetHistory()
+    public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>> GetHistory(
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
 
+        if (page < 1)
+        {
+            return BadRequest(new
+            {
+                message = "Page must be greater than zero."
+            });
+        }
+
+        if (pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest(new
+            {
+                message = "Page size must be between 1 and 100."
+            });
+        }
+
         var history = await _purchaseService
-            .GetPurchaseHistoryAsync(userId);
+            .GetPurchaseHistoryAsync(userId, page, pageSize);
 
         return Ok(history);
     }

@@ -1,5 +1,6 @@
 ﻿using GameHub.API.Data;
 using GameHub.API.Dtos.Purchases;
+using GameHub.API.Dtos.Common;
 using GameHub.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,14 +85,22 @@ public class PurchaseService
             .ToListAsync();
     }
 
-    public async Task<List<PurchaseHistoryResponse>> GetPurchaseHistoryAsync(
-    string userId)
+    public async Task<PagedResponse<PurchaseHistoryResponse>> GetPurchaseHistoryAsync(
+    string userId,
+    int page,
+    int pageSize)
     {
-        return await _context.Purchases
+        var query = _context.Purchases
             .AsNoTracking()
-            .Where(p => p.UserId == userId)
+            .Where(p => p.UserId == userId);
+
+        var totalItems = await query.CountAsync();
+
+        var items = await query
             .OrderByDescending(p => p.CreatedAt)
-            .Select(p => new PurchaseHistoryResponse // retorna DTO resumio
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(p => new PurchaseHistoryResponse
             {
                 Id = p.Id,
                 Status = p.Status.ToString(),
@@ -101,6 +110,18 @@ public class PurchaseService
                 TotalItems = p.Items.Sum(item => item.Quantity)
             })
             .ToListAsync();
+
+        var totalPages = (int)Math.Ceiling(
+            totalItems / (double)pageSize);
+
+        return new PagedResponse<PurchaseHistoryResponse>
+        {
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = totalPages,
+            Items = items
+        };
     }
 
 }
