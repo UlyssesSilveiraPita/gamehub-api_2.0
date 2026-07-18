@@ -4,11 +4,12 @@ using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
 using GameHub.API.Enums;
 using GameHub.API.Extensions;
+using GameHub.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameHub.API.Services.Commerce;
 
-public class PurchaseService
+public class PurchaseService : IPurchaseService
 {
     private readonly GameHubDbContext _context;
 

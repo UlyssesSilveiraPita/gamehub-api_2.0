@@ -1,11 +1,12 @@
 ﻿using GameHub.API.Data;
 using GameHub.API.Entities;
 using GameHub.API.Enums;
+using GameHub.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameHub.API.Services.Commerce;
 
-public class PaymentService
+public class PaymentService : IPaymentService
 {
     private readonly GameHubDbContext _context;
 
@@ -15,9 +16,9 @@ public class PaymentService
     }
 
     public async Task<Payment> CreatePaymentAsync(
-    int purchaseId,
-    string userId,
-    PaymentMethod paymentMethod)
+        int purchaseId,
+        string userId,
+        PaymentMethod paymentMethod)
     {
         var purchase = await _context.Purchases
             .Include(p => p.Payments)
@@ -63,8 +64,8 @@ public class PaymentService
     }
 
     public async Task<Payment> ApprovePaymentAsync(
-    int paymentId,
-    string userId)
+        int paymentId,
+        string userId)
     {
         var payment = await _context.Payments
             .Include(p => p.Purchase)
@@ -86,8 +87,8 @@ public class PaymentService
     }
 
     public async Task<Payment> FailPaymentAsync(
-    int paymentId,
-    string userId)
+        int paymentId,
+        string userId)
     {
         var payment = await _context.Payments
             .Include(p => p.Purchase)

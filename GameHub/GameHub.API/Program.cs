@@ -4,6 +4,7 @@ using GameHub.API.Entities;
 using GameHub.API.Services.Abstractions;
 using GameHub.API.Services.Authentication;
 using GameHub.API.Services.Commerce;
+using GameHub.API.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
@@ -18,8 +19,8 @@ SQLitePCL.Batteries.Init();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddScoped<PurchaseService>();
-builder.Services.AddScoped<PaymentService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUserService>();
@@ -120,11 +121,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
- 
 app.UseAuthentication(); // identifica quem é o usuário.
 app.UseAuthorization(); // verifica se ele pode acessar a rota.
-
 app.MapControllers();
 
 app.Run();

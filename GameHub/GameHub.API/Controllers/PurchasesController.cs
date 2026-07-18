@@ -1,7 +1,6 @@
 ﻿using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
 using GameHub.API.Services.Abstractions;
-using GameHub.API.Services.Commerce;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +11,11 @@ namespace GameHub.API.Controllers;
 [Route("api/[controller]")]
 public class PurchasesController : ControllerBase
 {
-    private readonly PurchaseService _purchaseService;
+    private readonly IPurchaseService _purchaseService;
     private readonly ICurrentUser _currentUser;
 
     public PurchasesController(
-        PurchaseService purchaseService,
+        IPurchaseService purchaseService,
         ICurrentUser currentUser)
     {
         _purchaseService = purchaseService;

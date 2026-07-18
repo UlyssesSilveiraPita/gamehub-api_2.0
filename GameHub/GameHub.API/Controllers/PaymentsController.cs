@@ -1,6 +1,5 @@
-﻿using System.Security.Claims;
-using GameHub.API.Dtos.Payments;
-using GameHub.API.Services.Commerce;
+﻿using GameHub.API.Dtos.Payments;
+using GameHub.API.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +10,15 @@ namespace GameHub.API.Controllers;
 [Route("api/purchases/{purchaseId:int}/payments")] // uma compra -> seus pagamentos
 public class PaymentsController : ControllerBase
 {
-    private readonly PaymentService _paymentService;
+    private readonly IPaymentService _paymentService;
+    private readonly ICurrentUser _currentUser;
 
-    public PaymentsController(PaymentService paymentService)
+    public PaymentsController(
+        IPaymentService paymentService,
+        ICurrentUser currentUser)
     {
         _paymentService = paymentService;
+        _currentUser = currentUser;
     }
 
     [HttpPost]
@@ -25,10 +28,10 @@ public class PaymentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaymentResponse>> CreatePayment(
-    int purchaseId,
-    CreatePaymentRequest request)
+        int purchaseId,
+        CreatePaymentRequest request)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
@@ -78,9 +81,9 @@ public class PaymentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaymentResponse>> ApprovePayment(
-    int paymentId)
+        int paymentId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
@@ -129,9 +132,9 @@ public class PaymentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaymentResponse>> FailPayment(
-    int paymentId)
+        int paymentId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
