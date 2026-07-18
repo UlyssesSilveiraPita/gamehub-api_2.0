@@ -1,4 +1,5 @@
 ﻿using GameHub.API.Data;
+using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -83,5 +84,23 @@ public class PurchaseService
             .ToListAsync();
     }
 
+    public async Task<List<PurchaseHistoryResponse>> GetPurchaseHistoryAsync(
+    string userId)
+    {
+        return await _context.Purchases
+            .AsNoTracking()
+            .Where(p => p.UserId == userId)
+            .OrderByDescending(p => p.CreatedAt)
+            .Select(p => new PurchaseHistoryResponse // retorna DTO resumio
+            {
+                Id = p.Id,
+                Status = p.Status.ToString(),
+                TotalAmount = p.TotalAmount,
+                Currency = p.Currency,
+                CreatedAt = p.CreatedAt,
+                TotalItems = p.Items.Sum(item => item.Quantity)
+            })
+            .ToListAsync();
+    }
 
 }

@@ -735,6 +735,31 @@
     ]
   },
   {
+    "ContainingType": "GameHub.API.Controllers.PurchasesController",
+    "Method": "GetHistory",
+    "RelativePath": "api/Purchases/history",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[GameHub.API.Dtos.Purchases.PurchaseHistoryResponse, GameHub.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
     "ContainingType": "GameHub.API.Controllers.SaveGamesController",
     "Method": "GetAll",
     "RelativePath": "api/SaveGames",
