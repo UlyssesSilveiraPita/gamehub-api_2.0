@@ -77,3 +77,8 @@ appsettings.Local.json
 # Logs
 logs/
 *.log
+
+# SQLite local databases
+*.db
+*.db-shm
+*.db-wal
