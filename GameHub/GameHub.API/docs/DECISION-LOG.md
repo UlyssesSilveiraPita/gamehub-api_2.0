@@ -204,3 +204,191 @@ O serviço foi registrado com ciclo de vida `Scoped`, garantindo uma instância 
 - Mudanças futuras no mecanismo de autenticação ficam isoladas.
 - O código fica mais simples de testar.
 - Reduzimos duplicação e acoplamento com o ASP.NET Core.
+
+---
+
+# ADR-006
+
+## Título
+
+Introdução do Result Pattern para tratamento de falhas de negócio
+
+### Status
+
+Aceita
+
+### Data
+
+Julho de 2026
+
+### Contexto
+
+Os serviços da aplicação lançavam exceções para representar falhas previsíveis de negócio, como produto inexistente ou quantidade inválida.
+
+Essa abordagem misturava erros inesperados com regras de negócio e fazia o middleware tratar situações que não eram exceções reais.
+
+### Decisão
+
+Foi introduzido um Result Pattern composto pelas classes:
+
+- `Result`
+- `Result<T>`
+- `Error`
+
+Os serviços passaram a retornar resultados explícitos de sucesso ou falha, substituindo exceções para cenários previsíveis.
+
+### Justificativa
+
+Essa abordagem torna o fluxo da aplicação mais explícito, facilita os testes unitários e reduz o uso de exceções para controle de fluxo.
+
+Além disso, separa claramente falhas de negócio de erros inesperados da aplicação.
+
+### Consequências
+
+- Serviços retornam `Result<T>`.
+- Controllers interpretam os resultados retornados pelos serviços.
+- O middleware permanece responsável apenas por exceções inesperadas.
+- A arquitetura torna-se mais previsível e preparada para testes.
+
+---
+
+# ADR-007
+
+## Título
+
+Criação de uma infraestrutura própria de validação
+
+### Status
+
+Aceita
+
+### Data
+
+Julho de 2026
+
+### Contexto
+
+Os controllers continham validações estruturais repetidas utilizando instruções `if`, enquanto os serviços também precisavam validar regras básicas de entrada.
+
+Essa abordagem aumentava a duplicação de código e misturava responsabilidades.
+
+### Decisão
+
+Foi criada uma infraestrutura própria de validação composta por:
+
+- `IValidator<T>`
+- `ValidationErrors`
+- Validators específicos por caso de uso
+
+Todos os validators passaram a ser registrados através da extensão:
+
+```csharp
+builder.Services.AddValidation();
+```
+
+### Justificativa
+
+A infraestrutura permite separar validação estrutural das regras de negócio, reduz duplicação e mantém os serviços focados apenas na lógica da aplicação.
+
+Também prepara a arquitetura para crescimento futuro sem depender inicialmente de bibliotecas externas.
+
+### Consequências
+
+- Controllers executam validações antes dos serviços.
+- Serviços continuam protegendo as regras de negócio.
+- Validações tornam-se reutilizáveis.
+- Novos módulos seguem o mesmo padrão arquitetural.
+
+---
+
+# ADR-008
+
+## Título
+
+Padronização das respostas HTTP da API
+
+### Status
+
+Aceita
+
+### Data
+
+Julho de 2026
+
+### Contexto
+
+Os controllers retornavam objetos anônimos para representar erros de validação e regras de negócio.
+
+Isso dificultava a padronização das respostas e aumentava a repetição de código.
+
+### Decisão
+
+Foram criados os DTOs:
+
+- `ValidationErrorResponse`
+- `ApiErrorResponse`
+
+Também foi criada a classe:
+
+- `ControllerExtensions`
+
+responsável por centralizar respostas HTTP reutilizáveis, como:
+
+- `ValidationFailed()`
+- `BadRequestError()`
+- `NotFoundError()`
+
+### Justificativa
+
+Centralizar a criação das respostas reduz duplicação, melhora a documentação do Swagger e facilita futuras alterações no formato das respostas.
+
+### Consequências
+
+- Todos os controllers podem reutilizar o mesmo padrão de resposta.
+- O formato das respostas torna-se consistente em toda a API.
+- Mudanças futuras serão realizadas em apenas um local.
+
+---
+
+# ADR-009
+
+## Título
+
+Centralização do mapeamento entre entidades e DTOs
+
+### Status
+
+Aceita
+
+### Data
+
+Julho de 2026
+
+### Contexto
+
+O mapeamento entre entidades e DTOs estava sendo repetido em diversos endpoints, aumentando o tamanho dos controllers e dificultando futuras alterações.
+
+### Decisão
+
+Foi criada a classe:
+
+- `PurchaseMappings`
+
+utilizando Extension Methods para converter entidades em DTOs.
+
+Exemplo:
+
+```csharp
+purchase.ToResponse();
+```
+
+### Justificativa
+
+Centralizar os mapeamentos reduz duplicação, melhora a legibilidade dos controllers e facilita futuras alterações nos contratos da API.
+
+### Consequências
+
+- Controllers deixam de conter lógica de mapeamento.
+- O código torna-se mais limpo e reutilizável.
+- Alterações em DTOs passam a ser realizadas em apenas um local.
+- O padrão poderá ser reutilizado para Players, Games, Achievements, SaveGames e demais módulos da aplicação.
