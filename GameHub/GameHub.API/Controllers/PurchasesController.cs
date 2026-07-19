@@ -1,6 +1,10 @@
 ﻿using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
+using GameHub.API.Extensions;
+using GameHub.API.Common.Errors;
+using GameHub.API.Mappings;
 using GameHub.API.Services.Abstractions;
+using GameHub.API.Validation.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,19 +17,26 @@ public class PurchasesController : ControllerBase
 {
     private readonly IPurchaseService _purchaseService;
     private readonly ICurrentUser _currentUser;
+    private readonly IValidator<CreatePurchaseRequest> _createPurchaseValidator;
+    private readonly IValidator<PurchaseHistoryQuery>_purchaseHistoryQueryValidator;
 
     public PurchasesController(
-        IPurchaseService purchaseService,
-        ICurrentUser currentUser)
+    IPurchaseService purchaseService,
+    ICurrentUser currentUser,
+    IValidator<CreatePurchaseRequest> createPurchaseValidator,
+    IValidator<PurchaseHistoryQuery> purchaseHistoryQueryValidator)
     {
         _purchaseService = purchaseService;
         _currentUser = currentUser;
+        _createPurchaseValidator = createPurchaseValidator;
+        _purchaseHistoryQueryValidator = purchaseHistoryQueryValidator;
     }
 
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(PurchaseResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationErrorResponse),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PurchaseResponse>> CreatePurchase(
@@ -38,32 +49,34 @@ public class PurchasesController : ControllerBase
             return Unauthorized();
         }
 
-        var purchase = await _purchaseService.CreatePurchaseAsync(
+        var validation = _createPurchaseValidator.Validate(request);
+
+        if (validation.IsInvalid)
+        {
+            return this.ValidationFailed(validation);
+        }
+
+        var result = await _purchaseService.CreatePurchaseAsync(
             userId,
             request.GameProductId,
             request.Quantity
         );
 
-        var response = new PurchaseResponse
+        if (result.IsFailure)
         {
-            Id = purchase.Id,
-            Status = purchase.Status.ToString(),
-            TotalAmount = purchase.TotalAmount,
-            Currency = purchase.Currency,
-            CreatedAt = purchase.CreatedAt,
-            Items = purchase.Items
-                .Select(item => new PurchaseItemResponse
-                {
-                    GameProductId = item.GameProductId,
-                    ProductName = item.ProductName,
-                    UnitPrice = item.UnitPrice,
-                    Quantity = item.Quantity,
-                    TotalPrice = item.TotalPrice
-                })
-                .ToList()
-        };
+            if (result.Error == PurchaseErrors.ProductNotFound)
+            {
+                return this.NotFoundError(result.Error);
+            }
 
-        return StatusCode(StatusCodes.Status201Created, response);
+            return this.BadRequestError(result.Error!);
+        }
+
+        var purchase = result.Value!;
+
+        return StatusCode(
+            StatusCodes.Status201Created,
+            purchase.ToResponse());
 
 
     }
@@ -85,26 +98,7 @@ public class PurchasesController : ControllerBase
         if (purchase is null)
             return NotFound();
 
-        var response = new PurchaseResponse
-        {
-            Id = purchase.Id,
-            Status = purchase.Status.ToString(),
-            TotalAmount = purchase.TotalAmount,
-            Currency = purchase.Currency,
-            CreatedAt = purchase.CreatedAt,
-            Items = purchase.Items
-                .Select(item => new PurchaseItemResponse
-                {
-                    GameProductId = item.GameProductId,
-                    ProductName = item.ProductName,
-                    UnitPrice = item.UnitPrice,
-                    Quantity = item.Quantity,
-                    TotalPrice = item.TotalPrice
-                })
-                .ToList()
-        };
-
-        return Ok(response);
+        return Ok(purchase.ToResponse());
     }
 
     // End Point Lista todas as compras do usuario cadastrado \\
@@ -121,55 +115,32 @@ public class PurchasesController : ControllerBase
 
         var purchases = await _purchaseService.GetPurchasesByUserAsync(userId);
 
-        var response = purchases.Select(p => new PurchaseResponse
-        {
-            Id = p.Id,
-            Status = p.Status.ToString(),
-            TotalAmount = p.TotalAmount,
-            Currency = p.Currency,
-            CreatedAt = p.CreatedAt,
-            Items = p.Items.Select(item => new PurchaseItemResponse
-            {
-                GameProductId = item.GameProductId,
-                ProductName = item.ProductName,
-                UnitPrice = item.UnitPrice,
-                Quantity = item.Quantity,
-                TotalPrice = item.TotalPrice
-            }).ToList()
-        }).ToList();
+        var response = purchases
+            .Select(purchase => purchase.ToResponse())
+            .ToList();
 
         return Ok(response);
     }
 
     [HttpGet("history")]
     [Produces("application/json")]
-    [ProducesResponseType(
-    typeof(PagedResponse<PurchaseHistoryResponse>),
-    StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(PagedResponse<PurchaseHistoryResponse>),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationErrorResponse),StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>> GetHistory(
-        [FromQuery] PurchaseHistoryQuery query)
+    public async Task<ActionResult<PagedResponse<PurchaseHistoryResponse>>>
+        GetHistory([FromQuery] PurchaseHistoryQuery query)
     {
         var userId = _currentUser.UserId;
 
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
 
-        if (query.Page < 1)
-        {
-            return BadRequest(new
-            {
-                message = "Page must be greater than zero."
-            });
-        }
+        var validation =
+            _purchaseHistoryQueryValidator.Validate(query);
 
-        if (query.PageSize < 1 || query.PageSize > 100)
+        if (validation.IsInvalid)
         {
-            return BadRequest(new
-            {
-                message = "Page size must be between 1 and 100."
-            });
+            return this.ValidationFailed(validation);
         }
 
         var history = await _purchaseService

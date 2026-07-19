@@ -1,12 +1,13 @@
 ﻿using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
+using GameHub.API.Common.Results;
 using GameHub.API.Entities;
 
 namespace GameHub.API.Services.Abstractions;
 
 public interface IPurchaseService
 {
-    Task<Purchase> CreatePurchaseAsync(
+    Task<Result<Purchase>> CreatePurchaseAsync(
         string userId,
         int gameProductId,
         int quantity);

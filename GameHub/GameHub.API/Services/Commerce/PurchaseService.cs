@@ -2,6 +2,8 @@
 using GameHub.API.Dtos.Common;
 using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
+using GameHub.API.Common.Results;
+using GameHub.API.Common.Errors;
 using GameHub.API.Enums;
 using GameHub.API.Extensions;
 using GameHub.API.Services.Abstractions;
@@ -18,24 +20,27 @@ public class PurchaseService : IPurchaseService
         _context = context;
     }
 
-    public async Task<Purchase> CreatePurchaseAsync(
+    public async Task<Result<Purchase>> CreatePurchaseAsync(
         string userId, // usuario que esta comprando
         int gameProductId, // produto escolhido
         int quantity) // quantidade desejada
     {
+        if(quantity <= 0)
+        {
+            return Result<Purchase>.Failure(
+                PurchaseErrors.InvalidQuantity);
+        }
+
         var product = await _context.GameProducts
             .FirstOrDefaultAsync(product =>
                 product.Id == gameProductId &&
                 product.IsActive);
 
+
         if (product is null)
         {
-            throw new InvalidOperationException("Game product not found or inactive.");
-        }
-
-        if(quantity <= 0)
-        {
-            throw new InvalidOperationException("Quantity must be greater than zero.");
+            return Result<Purchase>.Failure(
+                PurchaseErrors.ProductNotFound);
         }
 
         var item = new PurchaseItem
@@ -59,8 +64,8 @@ public class PurchaseService : IPurchaseService
         _context.Purchases.Add(purchase);
 
         await _context.SaveChangesAsync();
-        
-        return purchase;
+
+        return Result<Purchase>.Success(purchase);
 
     }
 

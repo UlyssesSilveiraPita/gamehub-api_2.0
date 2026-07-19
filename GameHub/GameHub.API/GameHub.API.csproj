@@ -21,7 +21,6 @@
 
 	<ItemGroup>
 		<Folder Include="docs\images\" />
-		<Folder Include="Mappings\" />
 	</ItemGroup>
 
 </Project>

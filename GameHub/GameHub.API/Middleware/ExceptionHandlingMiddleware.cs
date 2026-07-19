@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameHub.API.Dtos.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace GameHub.API.Middleware;
 
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -23,10 +28,16 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    private static async Task HandleExceptionAsync(
+    private async Task HandleExceptionAsync(
         HttpContext context,
         Exception exception)
     {
+        _logger.LogError(
+            exception,
+            "Unhandled exception. TraceId: {TraceId} | Method: {Method} | Path: {Path}",
+            context.TraceIdentifier,
+            context.Request.Method,
+            context.Request.Path);
         var statusCode = exception switch
         {
             ArgumentException =>
@@ -50,9 +61,8 @@ public class ExceptionHandlingMiddleware
                 ? "An unexpected error occurred."
                 : exception.Message;
 
-        var response = new
+        var response = new ErrorResponse
         {
-            Success = false,
             Status = statusCode,
             Message = message,
             TraceId = context.TraceIdentifier
