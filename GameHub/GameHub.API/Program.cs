@@ -1,21 +1,16 @@
 using GameHub.API.Data;
 using GameHub.API.Data.Seed;
-using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
 using GameHub.API.Extensions;
 using GameHub.API.Middleware;
 using GameHub.API.Services.Abstractions;
 using GameHub.API.Services.Authentication;
 using GameHub.API.Services.Commerce;
-using GameHub.API.Validation.Abstractions;
-using GameHub.API.Validation.Purchases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Writers;
 using System.Text;
 
 SQLitePCL.Batteries.Init();
