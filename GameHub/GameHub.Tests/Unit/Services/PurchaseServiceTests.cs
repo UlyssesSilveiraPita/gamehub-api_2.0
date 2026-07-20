@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using GameHub.API.Common.Errors;
+using GameHub.API.Dtos.Purchases;
 using GameHub.API.Entities;
+using GameHub.API.Enums;
 using GameHub.API.Services.Commerce;
 using GameHub.Tests.Builders;
 using GameHub.Tests.Helpers;
@@ -412,5 +414,171 @@ public class PurchaseServiceTests
         result.Select(purchase => purchase.Id)
             .Should()
             .ContainInOrder(2, 1);
+    }
+
+    [Fact]
+    public async Task GetPurchaseHistoryAsync_ShouldReturnPagedResponse_WhenUserHasPurchases()
+    {
+        // Arrange
+        var databaseName = Guid.NewGuid().ToString();
+
+        await using (var seedContext = TestDbContextFactory.Create(databaseName))
+        {
+            var purchase = new Purchase
+            {
+                Id = 1,
+                UserId = "user-1",
+                Currency = "BRL"
+            };
+
+            purchase.AddItem(new PurchaseItem
+            {
+                GameProductId = 1,
+                ProductName = "Wild Hunter",
+                UnitPrice = 59.90m,
+                Quantity = 2
+            });
+
+            seedContext.Purchases.Add(purchase);
+
+            await seedContext.SaveChangesAsync();
+        }
+
+        await using var context = TestDbContextFactory.Create(databaseName);
+
+        var service = new PurchaseService(context);
+
+        var request = new PurchaseHistoryQuery
+        {
+            Page = 1,
+            PageSize = 10
+        };
+
+        // Act
+        var result = await service.GetPurchaseHistoryAsync(
+            "user-1",
+            request);
+
+        // Assert
+
+        result.Should().NotBeNull();
+
+        result.Page.Should().Be(1);
+        result.PageSize.Should().Be(10);
+
+        result.TotalItems.Should().Be(1);
+        result.TotalPages.Should().Be(1);
+
+        result.Items.Should().ContainSingle();
+
+        var item = result.Items.Single();
+
+        item.Id.Should().Be(1);
+        item.Currency.Should().Be("BRL");
+        item.TotalAmount.Should().Be(119.80m);
+        item.TotalItems.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task GetPurchaseHistoryAsync_ShouldFilterPurchasesByStatus()
+    {
+        // Arrange
+        await using var context = TestDbContextFactory.Create();
+
+        context.Purchases.AddRange(
+            new Purchase
+            {
+                Id = 1,
+                UserId = "user-1",
+                Currency = "BRL",
+                Status = PurchaseStatus.Pending
+            },
+            new Purchase
+            {
+                Id = 2,
+                UserId = "user-1",
+                Currency = "BRL",
+                Status = PurchaseStatus.Paid
+            },
+            new Purchase
+            {
+                Id = 3,
+                UserId = "user-1",
+                Currency = "BRL",
+                Status = PurchaseStatus.Paid
+            });
+
+        await context.SaveChangesAsync();
+
+        var service = new PurchaseService(context);
+
+        var request = new PurchaseHistoryQuery
+        {
+            Page = 1,
+            PageSize = 10,
+            Status = PurchaseStatus.Paid
+        };
+
+        // Act
+        var result = await service.GetPurchaseHistoryAsync(
+            "user-1",
+            request);
+
+        // Assert
+        result.TotalItems.Should().Be(2);
+        result.Items.Should().HaveCount(2);
+
+        result.Items
+            .Should()
+            .OnlyContain(item => item.Status == PurchaseStatus.Paid.ToString());
+
+        result.Items
+            .Select(item => item.Id)
+            .Should()
+            .BeEquivalentTo(new[] { 2, 3 });
+    }
+
+    [Fact]
+    public async Task GetPurchaseHistoryAsync_ShouldCalculatePaginationMetadataCorrectly()
+    {
+        // Arrange
+        await using var context = TestDbContextFactory.Create();
+
+        for (int i = 1; i <= 5; i++)
+        {
+            context.Purchases.Add(new Purchase
+            {
+                Id = i,
+                UserId = "user-1",
+                Currency = "BRL"
+            });
+        }
+
+        await context.SaveChangesAsync();
+
+        var service = new PurchaseService(context);
+
+        var request = new PurchaseHistoryQuery
+        {
+            Page = 2,
+            PageSize = 2
+        };
+
+        // Act
+        var result = await service.GetPurchaseHistoryAsync(
+            "user-1",
+            request);
+
+        // Assert
+
+        result.Page.Should().Be(2);
+
+        result.PageSize.Should().Be(2);
+
+        result.TotalItems.Should().Be(5);
+
+        result.TotalPages.Should().Be(3);
+
+        result.Items.Should().HaveCount(2);
     }
 }
