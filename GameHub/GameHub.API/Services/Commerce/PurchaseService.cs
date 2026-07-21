@@ -14,10 +14,14 @@ namespace GameHub.API.Services.Commerce;
 public class PurchaseService : IPurchaseService
 {
     private readonly GameHubDbContext _context;
+    private readonly ILogger<PurchaseService> _logger;
 
-    public PurchaseService(GameHubDbContext context)
+    public PurchaseService(GameHubDbContext context,
+        ILogger<PurchaseService> logger)
     {
         _context = context;
+        _logger = logger;
+        
     }
 
     public async Task<Result<Purchase>> CreatePurchaseAsync(
@@ -25,8 +29,21 @@ public class PurchaseService : IPurchaseService
         int gameProductId, // produto escolhido
         int quantity) // quantidade desejada
     {
+
+        _logger.LogInformation(
+            "Starting purchase creation. UserId: {UserId} | GameProductId: {GameProductId} | Quantity: {Quantity}",
+            userId,
+            gameProductId,
+            quantity);
+
         if(quantity <= 0)
         {
+            _logger.LogWarning(
+            "Purchase creation rejected because quantity is invalid. UserId: {UserId} | GameProductId: {GameProductId} | Quantity: {Quantity}",
+            userId,
+            gameProductId,
+            quantity);
+
             return Result<Purchase>.Failure(
                 PurchaseErrors.InvalidQuantity);
         }
@@ -39,6 +56,11 @@ public class PurchaseService : IPurchaseService
 
         if (product is null)
         {
+            _logger.LogWarning(
+            "Purchase creation rejected because the product was not found or is inactive. UserId: {UserId} | GameProductId: {GameProductId}",
+            userId,
+            gameProductId);
+
             return Result<Purchase>.Failure(
                 PurchaseErrors.ProductNotFound);
         }
@@ -64,6 +86,15 @@ public class PurchaseService : IPurchaseService
         _context.Purchases.Add(purchase);
 
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation(
+           "Purchase created successfully. PurchaseId: {PurchaseId} | UserId: {UserId} | GameProductId: {GameProductId} | Quantity: {Quantity} | TotalAmount: {TotalAmount} | Currency: {Currency}",
+           purchase.Id,
+           userId,
+           gameProductId,
+           quantity,
+           purchase.TotalAmount,
+           purchase.Currency);
 
         return Result<Purchase>.Success(purchase);
 

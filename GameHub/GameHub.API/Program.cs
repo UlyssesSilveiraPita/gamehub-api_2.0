@@ -2,6 +2,7 @@ using GameHub.API.Data;
 using GameHub.API.Data.Seed;
 using GameHub.API.Entities;
 using GameHub.API.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using GameHub.API.Middleware;
 using GameHub.API.Services.Abstractions;
 using GameHub.API.Services.Authentication;
@@ -25,8 +26,13 @@ builder.Services.AddValidation();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUserService>();
 builder.Services.AddDataProtection();
+builder.Services.AddDbContext<GameHubDbContext>(options => options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<GameHubDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<GameHubDbContext>(
+        name: "database");
 
 builder.Services // validacoes para criacao de novo login
     .AddIdentityCore<ApplicationUser>(options =>
@@ -121,10 +127,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication(); // identifica quem é o usuário.
 app.UseAuthorization(); // verifica se ele pode acessar a rota.
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();

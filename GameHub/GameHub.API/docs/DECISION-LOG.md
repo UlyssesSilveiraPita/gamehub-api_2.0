@@ -401,3 +401,58 @@ The following architectural decisions are expected during future development:
 | ADR-009 | ✅ Accepted |
 | ADR-010 | ✅ Accepted |
 | ADR-011 | ✅ Accepted |
+
+---
+
+# ADR-012
+
+## Title
+
+Preservation of the Existing Modular Folder Architecture
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+GameHub API 2.0 currently uses a modular folder-based architecture within the main API project.
+
+The structure is stable, documented, covered by automated tests, and already supports the application's current requirements.
+
+Splitting the existing code into separate Domain, Application, and Infrastructure projects would require moving classes, changing namespaces, updating dependencies, and modifying working features. This migration would introduce significant risk without providing an immediate business or technical benefit.
+
+### Decision
+
+Preserve the current folder-based architecture of the GameHub API.
+
+The existing backend will not be dismantled solely to adopt a multi-project Clean Architecture structure.
+
+New projects may be added to the solution only when they introduce isolated capabilities without requiring destructive restructuring of the current backend.
+
+Examples include:
+
+- Blazor frontend
+- Integration test project
+- Background worker
+- Supporting tools
+- Independent infrastructure components
+
+### Rationale
+
+Architecture must support the product rather than become a source of unnecessary complexity.
+
+The current structure provides sufficient separation of responsibilities while maintaining stability, simplicity, and development velocity.
+
+### Consequences
+
+- The current GameHub.API project structure will remain intact.
+- Improvements will be implemented incrementally.
+- Existing code will only be refactored when there is a concrete technical need.
+- Every architectural change must preserve existing behavior.
+- Build and automated tests must remain successful after each change.
+- Clean Architecture remains an optional future consideration rather than a planned migration.

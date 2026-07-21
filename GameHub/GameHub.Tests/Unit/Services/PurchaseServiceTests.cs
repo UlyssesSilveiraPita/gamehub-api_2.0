@@ -7,19 +7,24 @@ using GameHub.API.Services.Commerce;
 using GameHub.Tests.Builders;
 using GameHub.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Security.Policy;
 
 namespace GameHub.Tests.Unit.Services;
 
 public class PurchaseServiceTests
 {
+    private readonly ILogger<PurchaseService> _logger =
+    NullLogger<PurchaseService>.Instance;
+
     [Fact]
     public async Task CreatePurchaseAsync_ShouldReturnInvalidQuantity_WhenQuantityIsZero()
     {
         // Arrange
         await using var context = TestDbContextFactory.Create();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.CreatePurchaseAsync(
@@ -40,7 +45,7 @@ public class PurchaseServiceTests
         // Arrange
         await using var context = TestDbContextFactory.Create();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.CreatePurchaseAsync(
@@ -61,7 +66,7 @@ public class PurchaseServiceTests
         // Arrange
         await using var context = TestDbContextFactory.Create();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.CreatePurchaseAsync(
@@ -89,7 +94,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.CreatePurchaseAsync(
@@ -121,7 +126,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.CreatePurchaseAsync(
@@ -188,7 +193,7 @@ public class PurchaseServiceTests
         await using var context =
             TestDbContextFactory.Create(databaseName);
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchaseByIdAsync(
@@ -225,7 +230,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchaseByIdAsync(
@@ -242,7 +247,7 @@ public class PurchaseServiceTests
         // Arrange
         await using var context = TestDbContextFactory.Create();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchaseByIdAsync(
@@ -281,7 +286,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchasesByUserAsync("user-1");
@@ -310,7 +315,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchasesByUserAsync("user-1");
@@ -352,7 +357,7 @@ public class PurchaseServiceTests
         await using var context =
             TestDbContextFactory.Create(databaseName);
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchasesByUserAsync("user-1");
@@ -403,7 +408,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         // Act
         var result = await service.GetPurchasesByUserAsync("user-1");
@@ -446,7 +451,7 @@ public class PurchaseServiceTests
 
         await using var context = TestDbContextFactory.Create(databaseName);
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         var request = new PurchaseHistoryQuery
         {
@@ -510,7 +515,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         var request = new PurchaseHistoryQuery
         {
@@ -556,7 +561,7 @@ public class PurchaseServiceTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         var request = new PurchaseHistoryQuery
         {

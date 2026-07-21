@@ -5,11 +5,16 @@ using GameHub.API.Enums;
 using GameHub.API.Extensions;
 using GameHub.API.Services.Commerce;
 using GameHub.Tests.Helpers;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GameHub.Tests.Unit.Extensions;
 
 public class PurchaseQueryExtensionsTests
 {
+    private readonly ILogger<PurchaseService> _logger =
+    NullLogger<PurchaseService>.Instance;
+
     //FilterByStatus\\
 
     [Fact]
@@ -314,7 +319,7 @@ public class PurchaseQueryExtensionsTests
 
         await context.SaveChangesAsync();
 
-        var service = new PurchaseService(context);
+        var service = new PurchaseService(context, _logger);
 
         var request = new PurchaseHistoryQuery
         {
