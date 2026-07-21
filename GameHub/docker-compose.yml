@@ -6,7 +6,7 @@ services:
       context: ./GameHub.API
       dockerfile: Dockerfile
 
-    image: gamehub-api:1.0
+    image: gamehub-api:2.0
 
     ports:
       - "8080:8080"
@@ -19,6 +19,13 @@ services:
       - gamehub-data:/app/data
 
     restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   gamehub-data:

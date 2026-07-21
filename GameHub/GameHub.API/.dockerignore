@@ -1,17 +1,51 @@
-bin/
-obj/
+# Build artifacts
+**/bin/
+**/obj/
+**/TestResults/
+**/coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# IDE and user files
 .vs/
 .vscode/
-
+.idea/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
+# Git
 .git/
 .gitignore
+.gitattributes
 
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+*.temp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Docker and repository files not required by the image
 Dockerfile*
 docker-compose*
 README.md
+docs/
+.github/
 
-*.db-shm
-*.db-wal
+# Environment and secret files
+.env
+.env.*
+!.env.example
