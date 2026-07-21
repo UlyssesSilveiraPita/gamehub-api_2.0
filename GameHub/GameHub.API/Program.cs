@@ -115,7 +115,14 @@ var app = builder.Build();
 // inicializando novo usuario e criacao de produtos caso nao tenha ainda \\
 using (var scope = app.Services.CreateScope())
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+
+    var services = scope.ServiceProvider;
+
+    var dbContext = services.GetRequiredService<GameHubDbContext>();
+
+    await dbContext.Database.MigrateAsync();
+
+    var seeder = services.GetRequiredService<DatabaseSeeder>();
 
     await seeder.SeedAsync();
 }

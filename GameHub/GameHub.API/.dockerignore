@@ -1,0 +1,17 @@
+bin/
+obj/
+.vs/
+.vscode/
+
+*.user
+*.suo
+
+.git/
+.gitignore
+
+Dockerfile*
+docker-compose*
+README.md
+
+*.db-shm
+*.db-wal

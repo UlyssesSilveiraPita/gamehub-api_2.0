@@ -1,0 +1,24 @@
+services:
+  gamehub-api:
+    container_name: gamehub-api
+
+    build:
+      context: ./GameHub.API
+      dockerfile: Dockerfile
+
+    image: gamehub-api:1.0
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Data Source=/app/data/gamehub.db
+
+    volumes:
+      - gamehub-data:/app/data
+
+    restart: unless-stopped
+
+volumes:
+  gamehub-data:

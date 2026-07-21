@@ -1,4 +1,5 @@
-﻿using GameHub.API.Dtos.Payments;
+﻿using GameHub.API.Mappings;
+using GameHub.API.Dtos.Payments;
 using GameHub.API.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,18 +44,7 @@ public class PaymentsController : ControllerBase
                 userId,
                 request.PaymentMethod);
 
-            var response = new PaymentResponse
-            {
-                Id = payment.Id,
-                PurchaseId = payment.PurchaseId,
-                Status = payment.Status.ToString(),
-                PaymentMethod = payment.PaymentMethod.ToString(),
-                Amount = payment.Amount,
-                Currency = payment.Currency,
-                IdempotencyKey = payment.IdempotencyKey,
-                ExternalTransactionId = payment.ExternalTransactionId,
-                CreatedAt = payment.CreatedAt
-            };
+            var response = payment.ToResponse();
 
             return StatusCode(StatusCodes.Status201Created, response);
         }
@@ -94,18 +84,7 @@ public class PaymentsController : ControllerBase
                 paymentId,
                 userId);
 
-            var response = new PaymentResponse
-            {
-                Id = payment.Id,
-                PurchaseId = payment.PurchaseId,
-                Status = payment.Status.ToString(),
-                PaymentMethod = payment.PaymentMethod.ToString(),
-                Amount = payment.Amount,
-                Currency = payment.Currency,
-                IdempotencyKey = payment.IdempotencyKey,
-                ExternalTransactionId = payment.ExternalTransactionId,
-                CreatedAt = payment.CreatedAt
-            };
+            var response = payment.ToResponse();
 
             return Ok(response);
         }
@@ -145,18 +124,7 @@ public class PaymentsController : ControllerBase
                 paymentId,
                 userId);
 
-            var response = new PaymentResponse
-            {
-                Id = payment.Id,
-                PurchaseId = payment.PurchaseId,
-                Status = payment.Status.ToString(),
-                PaymentMethod = payment.PaymentMethod.ToString(),
-                Amount = payment.Amount,
-                Currency = payment.Currency,
-                IdempotencyKey = payment.IdempotencyKey,
-                ExternalTransactionId = payment.ExternalTransactionId,
-                CreatedAt = payment.CreatedAt
-            };
+            var response = payment.ToResponse();
 
             return Ok(response);
         }

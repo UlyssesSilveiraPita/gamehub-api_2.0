@@ -1,4 +1,5 @@
-﻿using GameHub.API.Entities;
+﻿using GameHub.API.Common.Results;
+using GameHub.API.Entities;
 using GameHub.API.Enums;
 
 namespace GameHub.API.Services.Abstractions;

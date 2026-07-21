@@ -33,7 +33,6 @@
     <Folder Include="Integration\Controllers\" />
     <Folder Include="Integration\Authentication\" />
     <Folder Include="Integration\Database\" />
-    <Folder Include="Unit\Mappings\" />
     <Folder Include="Unit\Controllers\" />
   </ItemGroup>
 
