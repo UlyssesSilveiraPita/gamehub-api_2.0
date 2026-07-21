@@ -163,6 +163,7 @@ Entity-to-DTO mapping is centralized using Extension Methods.
 Current mapping modules include:
 
 - PurchaseMappings
+- PaymentMappings
 
 Future modules:
 
@@ -172,6 +173,22 @@ Future modules:
 - SaveGameMappings
 
 This approach keeps controllers free from repetitive mapping logic.
+
+---
+
+# Observability
+
+The backend includes built-in observability components.
+
+Current implementation:
+
+- Structured Logging
+- Request Logging
+- Payment Logging
+- Health Checks
+- Database Health Checks
+
+These components simplify diagnostics and production monitoring while preserving application performance.
 
 ---
 
@@ -196,46 +213,29 @@ The project currently includes automated unit tests covering the most important 
 
 Current status:
 
-- ✅ 34 automated unit tests
+- ✅ 40 automated unit tests
 - ✅ Result Pattern
-- ✅ Validation infrastructure
-- ✅ Business services
-- ✅ Core application behavior
+- ✅ Validation Infrastructure
+- ✅ Purchase Services
+- ✅ Payment Services
+- ✅ Query Extensions
+- ✅ DTO Mappings
 
-Test coverage will continue to grow as new modules are implemented.
+Test coverage continues to grow as new modules are implemented.
 
 ---
 
 # Future Evolution
 
-The current architecture was intentionally designed to support an incremental migration toward Clean Architecture.
+The current architecture was intentionally designed to support incremental growth without disruptive restructuring.
 
-Future evolution includes:
+Future improvements include:
 
-```text
-GameHub.sln
-│
-├── GameHub.API
-├── GameHub.Application
-├── GameHub.Domain
-├── GameHub.Infrastructure
-└── GameHub.Tests
-```
-
-This migration will be performed gradually without disrupting existing functionality.
-
----
-
-# Next Architectural Milestones
-
-The next planned architectural improvements are:
-
-- Structured Logging
-- Correlation ID
-- Health Checks
-- Docker Support
 - CI/CD Pipeline
 - Blazor Frontend
+- Production Deployment
+- Background Processing
+- Event-Driven Integrations
 
 ---
 
@@ -250,9 +250,9 @@ The next planned architectural improvements are:
 | Global Exception Middleware | ✅ |
 | CurrentUser Abstraction | ✅ |
 | DTO Mapping | ✅ |
-| Automated Unit Tests | ✅ (34 Tests) |
-| Observability | ⏳ Next Phase |
-| Docker | ⏳ Planned |
+| Observability | ✅ |
+| Docker Support | ✅ |
+| Automated Unit Tests | ✅ (40 Tests) |
 | CI/CD | ⏳ Planned |
 | Blazor Frontend | ⏳ Planned |
-| Clean Architecture Migration | ⏳ Future |
+| Production Release | ⏳ Planned |

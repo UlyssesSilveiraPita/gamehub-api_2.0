@@ -456,3 +456,46 @@ The current structure provides sufficient separation of responsibilities while m
 - Every architectural change must preserve existing behavior.
 - Build and automated tests must remain successful after each change.
 - Clean Architecture remains an optional future consideration rather than a planned migration.
+
+---
+
+# ADR-013
+
+## Title
+
+Test-First Evolution for Existing Backend Modules
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+As the commercial module matured, additional architectural refinements were considered, including service refactoring and interface redesign.
+
+However, the existing implementation was already stable, documented and validated through automated tests.
+
+Introducing structural changes without concrete technical motivation would increase maintenance cost and project risk.
+
+### Decision
+
+Prioritize expanding automated test coverage before performing structural refactoring of existing services.
+
+Existing production code should remain unchanged unless tests reveal a concrete technical need for improvement.
+
+### Rationale
+
+Stable software benefits more from stronger regression protection than from unnecessary structural changes.
+
+Test-first evolution increases confidence, preserves stability and supports future architectural improvements with lower risk.
+
+### Consequences
+
+- Existing services remain stable.
+- New refactorings require measurable technical justification.
+- Automated tests become the primary safety net for future evolution.
+- Incremental improvements remain the preferred development strategy.

@@ -178,16 +178,40 @@ Ownership is validated using the authenticated user's identifier obtained from t
 
 ---
 
-# Future Authorization Improvements
+# Current Security Model
 
-The following improvements are planned for future versions:
+GameHub API 2.0 currently adopts a layered authorization model.
 
-- Policy-Based Authorization
-- Resource-Based Authorization
-- Fine-Grained Permissions
-- Permission Claims
+The authentication process is handled by ASP.NET Identity and JWT Bearer Authentication.
+
+Authorization is enforced through three complementary mechanisms:
+
+- Authentication (JWT)
+- Role-based Authorization
+- Resource Ownership Validation
+
+This approach ensures that authenticated users can only access resources they own while administrators maintain elevated privileges where appropriate.
+
+The CurrentUser abstraction centralizes user identity retrieval, reducing coupling with the HTTP layer and improving testability.
+
+This security model is considered stable and provides a solid foundation for future platform growth.
+
+---
+
+# Future Improvements
+
+The current permission model is intentionally simple and maintainable.
+
+Future platform growth may introduce additional authorization scenarios such as:
+
+- Policy-based Authorization
+- Permission-based Authorization
+- Fine-grained Administrative Roles
 - Audit Logging
-- Administrative Activity Tracking
+- Multi-Tenant Support
+- External Identity Providers (Google, Microsoft, Steam)
+
+These improvements are not required for the current project scope but can be incorporated without major architectural changes.
 
 ---
 
@@ -204,16 +228,16 @@ GameHub API follows these security principles:
 
 ---
 
-# Current Status
+# Permission System Status
 
-| Security Component | Status |
-|--------------------|--------|
-| JWT Authentication | ✅ |
-| Role-Based Authorization | ✅ |
+| Component | Status |
+|-----------|--------|
+| Authentication | ✅ |
+| JWT Authorization | ✅ |
+| Role-based Authorization | ✅ |
 | Ownership Validation | ✅ |
 | CurrentUser Abstraction | ✅ |
-| Protected Endpoints | ✅ |
-| Standardized Responses | ✅ |
-| Automated Unit Tests | ✅ |
-| Policy-Based Authorization | ⏳ Planned |
-| Audit Logging | ⏳ Planned |
+| Protected Controllers | ✅ |
+| Commerce Authorization | ✅ |
+| Automated Tests | ✅ (40 Tests) |
+| Documentation | ✅ |
