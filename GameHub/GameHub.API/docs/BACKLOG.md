@@ -1,250 +1,250 @@
-# 🎮 GameHub API 2.0
+# 📋 GameHub API 2.0 — Development Roadmap
 
-## Sobre o projeto
+## Purpose
 
-Uma plataforma completa para gerenciamento de jogadores, jogos, conquistas, saves, rankings e compras digitais, desenvolvida
-com ASP.NET Core Web API e Blazor, seguindo boas práticas modernas de arquitetura e desenvolvimento.
+This document tracks the evolution of GameHub API 2.0 throughout its development lifecycle.
 
----
-
-# Objetivos
-
-- Evoluir o GameHub API 1.0
-- Aplicar o conteúdo estudado na Formação .NET
-- Implementar Clean Architecture
-- Aplicar DDD
-- Aplicar SOLID
-- Criar testes automatizados
-- Criar frontend em Blazor
-- Containerizar a aplicação
-- Implementar CI/CD
-- Construir um projeto digno de portfólio profissional
+Rather than listing isolated tasks, the roadmap is organized into development phases, making it easier to understand the project's current maturity and future direction.
 
 ---
 
-# Roadmap
+# Project Status
 
-- [x] Base da API
-- [x] Documentação
-- [ ] Arquitetura
-- [x] Pagamentos
-- [ ] Testes
-- [ ] Blazor
-- [ ] Docker
-- [ ] Pipeline
-- [ ] Deploy
-- [ ] Release final
-
----
-
-## Epic 1 — Planejamento e documentação
-
-### Objetivo
-
-Preparar a evolução do GameHub 2.0 antes das mudanças estruturais e funcionais.
-
-### Entregas
-
-- [x] Criar o repositório GameHub API 2.0
-- [x] Validar build e execução da API
-- [x] Confirmar funcionamento do Swagger
-- [x] Criar pasta de documentação
-- [x] Criar matriz de permissões
-- [x] Criar registro de decisões técnicas
-- [x] Atualizar o README da versão 2.0
-- [x] Definir o domínio de compras e pagamentos
-
-### Critério de conclusão
-
-A documentação inicial deve explicar o objetivo do sistema, as permissões, as decisões técnicas e a ordem de evolução do 
-projeto.
+| Phase | Status |
+|--------|--------|
+| Foundation | ✅ Completed |
+| Professional Backend | ✅ Completed |
+| Observability | ⏳ Next |
+| Docker | ⏳ Planned |
+| CI/CD | ⏳ Planned |
+| Blazor Frontend | ⏳ Planned |
+| Production Release | ⏳ Planned |
 
 ---
 
-## Epic 2 — Compras e pagamentos
+# Phase 1 — Foundation ✅
 
-### Objetivo
+## Goal
 
-Criar um módulo de compras digitais e pagamentos integrado ao domínio do GameHub.
+Build the initial version of the GameHub platform and establish the core domain.
 
-### Entregas
+### Completed
 
-- [x] Modelar produtos digitais
-- [x] Modelar compras
-- [x] Modelar pagamentos
-- [x] Implementar estados de pagamento
-- [x] Implementar intenção de pagamento
-- [x] Implementar confirmação de pagamento
-- [x] Implementar idempotência
-- [x] Impedir pagamentos ativos duplicados
-- [ ] Criar gateway de pagamento simulado
-- [x] Criar endpoints de consulta
-- [x] Aplicar autorização por usuário e administrador
-- [x] Documentar endpoints no Swagger
-
-### Critério de conclusão
-
-Um usuário autenticado deve conseguir iniciar e consultar o pagamento de uma compra própria, enquanto o administrador 
-deve conseguir auditar os pagamentos.
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQLite database
+- JWT Authentication
+- ASP.NET Identity
+- Swagger
+- Players module
+- Achievements module
+- Save Games module
+- Leaderboard module
+- Initial documentation
+- Git repository
+- Initial architecture
 
 ---
 
-## Epic 3 — Arquitetura
+# Phase 2 — Professional Backend ✅
 
-### Objetivo
+## Goal
 
-Evoluir o projeto para uma arquitetura organizada, testável e com baixo acoplamento.
+Transform the initial API into a maintainable, scalable, and production-ready backend.
 
-### Entregas
+### Completed
 
-- [ ] Definir as camadas da solução
-- [ ] Criar projeto Domain
-- [ ] Criar projeto Application
-- [ ] Criar projeto Infrastructure
-- [x] Manter a API como camada de apresentação
-- [x] Separar regras de negócio dos controllers
-- [ ] Criar interfaces de repositórios
-- [ ] Criar interfaces de gateways
-- [x] Aplicar injeção de dependência
-- [x] Aplicar DTOs de entrada e saída
-- [ ] Centralizar mapeamentos
-- [x] Padronizar tratamento de erros
+### Commercial Module
 
-### Critério de conclusão
+- Digital Products
+- Purchases
+- Payments
+- Payment Status
+- Payment Intention
+- Payment Confirmation
+- Idempotency Protection
 
-As regras de negócio devem permanecer independentes de banco de dados, controllers e serviços externos.
+### Architecture
 
----
+- Dependency Injection
+- Result Pattern
+- Validation Infrastructure
+- Global Exception Middleware
+- Controller Extensions
+- DTO Mapping
+- CurrentUser Abstraction
 
-## Epic 4 — Testes
+### Security
 
-### Objetivo
+- JWT Authorization
+- Role-based Authorization
+- Ownership Validation
+- Protected Endpoints
 
-Garantir segurança para evoluir o projeto sem quebrar comportamentos existentes.
+### Quality
 
-### Entregas
-
-- [ ] Criar projeto de testes unitários
-- [ ] Testar regras de pagamento
-- [ ] Testar transições de estado
-- [ ] Testar valores inválidos
-- [ ] Testar idempotência
-- [ ] Testar duplicidade de pagamento
-- [ ] Criar projeto de testes de integração
-- [ ] Testar autenticação
-- [ ] Testar autorização
-- [ ] Testar endpoints principais
-- [ ] Testar persistência no banco
-
-### Critério de conclusão
-
-As principais regras de negócio e os fluxos críticos da API devem possuir testes automatizados.
+- Automated Unit Tests (34)
+- Build Validation
+- Swagger Documentation
+- Architecture Documentation
+- ADR Documentation
+- Domain Documentation
+- Permission Matrix
 
 ---
 
-## Epic 5 — Observabilidade
+# Phase 3 — Observability ⏳
 
-### Objetivo
+## Goal
 
-Facilitar o diagnóstico e o acompanhamento da aplicação.
+Increase visibility into application behavior and simplify diagnostics.
 
-### Entregas
+### Planned
 
-- [ ] Adicionar logging estruturado
-- [ ] Adicionar correlation ID
-- [ ] Registrar eventos importantes de pagamento
-- [ ] Evitar dados sensíveis nos logs
-- [ ] Adicionar health check da API
-- [ ] Adicionar health check do banco
-- [ ] Documentar logs e health checks
-
----
-
-## Epic 6 — Frontend Blazor
-
-### Objetivo
-
-Criar uma interface moderna para gerenciamento das funcionalidades do GameHub.
-
-### Entregas
-
-- [ ] Criar projeto Blazor
-- [ ] Definir identidade visual
-- [ ] Criar tela de login
-- [ ] Criar dashboard
-- [ ] Criar tela de jogadores
-- [ ] Criar tela de conquistas
-- [ ] Criar tela de save games
-- [ ] Criar tela de leaderboard
-- [ ] Criar tela de compras
-- [ ] Criar tela de pagamentos
-- [ ] Criar área administrativa
-- [ ] Integrar autenticação JWT
+- Structured Logging
+- Correlation ID
+- Request Logging
+- Payment Event Logging
+- Health Checks
+- Database Health Checks
+- Log Documentation
 
 ---
 
-## Epic 7 — Containerização
+# Phase 4 — Docker ⏳
 
-### Objetivo
+## Goal
 
-Padronizar a execução da aplicação em diferentes ambientes.
+Containerize the application for consistent execution across environments.
 
-### Entregas
+### Planned
 
-- [ ] Criar Dockerfile
-- [ ] Utilizar build multi-stage
-- [ ] Criar docker-compose
-- [ ] Configurar API e banco
-- [ ] Criar arquivo `.env.example`
-- [ ] Adicionar health checks aos containers
-- [ ] Documentar execução com Docker
-
----
-
-## Epic 8 — Pipeline CI/CD
-
-### Objetivo
-
-Automatizar a validação e a entrega do projeto.
-
-### Entregas
-
-- [ ] Criar pipeline para pull requests
-- [ ] Executar restore
-- [ ] Executar build
-- [ ] Executar testes
-- [ ] Publicar artefatos
-- [ ] Gerar imagem Docker
-- [ ] Executar smoke test
-- [ ] Adicionar badge ao README
+- Dockerfile
+- Multi-stage Build
+- Docker Compose
+- Environment Variables
+- Container Health Checks
+- Docker Documentation
 
 ---
 
-## Epic 9 — Deploy e release
+# Phase 5 — Continuous Integration ⏳
 
-### Objetivo
+## Goal
 
-Disponibilizar uma versão pública e documentada do GameHub 2.0.
+Automate validation and build processes.
 
-### Entregas
+### Planned
 
-- [ ] Definir ambiente de hospedagem
-- [ ] Publicar API
-- [ ] Publicar frontend
-- [ ] Configurar banco de produção
-- [ ] Criar changelog
-- [ ] Criar tag da versão
-- [ ] Criar release no GitHub
-- [ ] Registrar imagens e demonstrações no README
+- GitHub Actions
+- Restore
+- Build
+- Automated Tests
+- Publish Artifacts
+- Docker Image Build
+- Pipeline Badges
 
 ---
 
-# Status atual
+# Phase 6 — Blazor Frontend ⏳
 
-**Fase atual:** planejamento e documentação.
+## Goal
 
-**Último marco:** base do GameHub API 2.0 validada com build e Swagger funcionando.
+Provide a modern user interface integrated with the GameHub API.
 
-**Próximo passo:** criar a matriz de permissões do sistema.
+### Planned
 
-...
+### Authentication
+
+- Login
+- Registration
+- JWT Integration
+
+### Dashboard
+
+- Statistics
+- Recent Activity
+- User Summary
+
+### Game Management
+
+- Games
+- Products
+- Purchases
+- Payments
+
+### Player Management
+
+- Players
+- Achievements
+- Save Games
+- Leaderboards
+
+### Administration
+
+- User Management
+- Product Management
+- Payment Monitoring
+
+---
+
+# Phase 7 — Production Release ⏳
+
+## Goal
+
+Prepare the project for public release.
+
+### Planned
+
+- Production Deployment
+- Public Database
+- Docker Deployment
+- Release Notes
+- GitHub Release
+- Final README
+- GIF Demonstrations
+- Screenshots
+- Video Demonstrations
+
+---
+
+# Current Progress
+
+## Completed
+
+- Professional Backend
+- Commercial Module
+- Security
+- Documentation
+- Automated Tests
+
+## Current Phase
+
+**Observability**
+
+## Next Milestones
+
+1. Structured Logging
+2. Health Checks
+3. Docker
+4. CI/CD
+5. Blazor Frontend
+6. Production Release
+
+---
+
+# Long-Term Vision
+
+GameHub API 2.0 is being developed as a complete backend platform for digital game management.
+
+The final version will include:
+
+- Production-ready backend
+- Modern Blazor frontend
+- Docker support
+- Automated CI/CD pipeline
+- Comprehensive documentation
+- Professional testing strategy
+- Clean Architecture evolution
+
+The project also serves as the technical foundation for future systems developed by **Calisto Interactive**.

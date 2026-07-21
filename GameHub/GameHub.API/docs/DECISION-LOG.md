@@ -1,394 +1,403 @@
 # 📘 Architecture Decision Log (ADR)
 
-## Objetivo
+## Purpose
 
-Este documento registra as principais decisões técnicas e arquiteturais tomadas durante o desenvolvimento do 
-GameHub API 2.0.
+This document records the most important architectural and technical decisions made during the development of GameHub API 2.0.
 
-Cada decisão contém:
+Each Architecture Decision Record (ADR) contains:
 
-- Contexto
-- Decisão
-- Justificativa
-- Consequências
+- Context
+- Decision
+- Rationale
+- Consequences
 
-O objetivo é facilitar a manutenção do projeto e documentar a evolução da arquitetura.
+The purpose of this document is to document the project's evolution, facilitate maintenance, and preserve the reasoning behind architectural decisions.
 
 ---
 
 # ADR-001
 
-## Título
+## Title
 
-Evolução do GameHub API 1.0 para GameHub API 2.0
-
-### Status
-
-Aceita
-
-### Data
-
-Julho de 2026
-
-### Contexto
-
-O projeto GameHub API 1.0 já possuía uma base funcional contendo autenticação JWT, gerenciamento de jogadores, conquistas, 
-save games e leaderboard.
-
-A nova etapa da formação .NET exigia a criação de um novo projeto utilizando pagamentos, testes, arquitetura limpa, 
-observabilidade e containerização.
-
-### Decisão
-
-Ao invés de iniciar um novo projeto do zero, decidiu-se evoluir o GameHub API existente para a versão 2.0.
-
-### Justificativa
-
-A evolução da aplicação aproxima o projeto de um cenário real encontrado no mercado, onde sistemas normalmente recebem 
-novas funcionalidades ao longo do tempo.
-
-Além disso, essa abordagem preserva o histórico de desenvolvimento e permite aplicar novos conceitos sobre uma base 
-já consolidada.
-
-### Consequências
-
-O projeto continuará crescendo de forma incremental.
-
-Novas funcionalidades deverão respeitar a arquitetura existente e serão refatoradas sempre que necessário para manter 
-baixo acoplamento e alta coesão.
-
----
-
-# ADR-002
-
-## Título
-
-Adaptação do domínio da Alura para o domínio GameHub
-
-### Status
-
-Aceita
-
-### Data
-
-Julho de 2026
-
-### Contexto
-
-O desafio original da formação .NET utiliza um domínio voltado para cursos, estudantes, matrículas e pagamentos.
-
-O objetivo do GameHub API é representar uma plataforma de gerenciamento de jogos.
-
-### Decisão
-
-Os conceitos do desafio serão adaptados para o domínio do GameHub.
-
-Enrollment será substituído por Purchase.
-
-Student será substituído por User.
-
-Payments continuarão existindo, porém vinculados às compras realizadas pelo usuário.
-
-### Justificativa
-
-A adaptação mantém o projeto coerente com o objetivo principal do GameHub e torna o portfólio mais alinhado à área de 
-desenvolvimento de jogos.
-
-### Consequências
-
-Toda nova funcionalidade deverá utilizar a linguagem do domínio GameHub em vez da linguagem utilizada pelo curso.
-
----
-
-# ADR-003
-
-## Título
-
-Frontend desenvolvido com Blazor
-
-### Status
-
-Aceita
-
-### Data
-
-Julho de 2026
-
-### Contexto
-
-O GameHub API inicialmente era apenas uma Web API.
-
-Para transformar o projeto em uma aplicação completa seria necessário um frontend.
-
-### Decisão
-
-Utilizar Blazor como tecnologia oficial da interface do GameHub.
-
-### Justificativa
-
-Blazor utiliza C#, permitindo compartilhar conhecimentos, modelos e boas práticas com a Web API.
-
-Além disso, demonstra domínio do ecossistema .NET completo.
-
-### Consequências
-
-O projeto passará a possuir uma interface moderna integrada à API utilizando autenticação JWT.
-
----
-
-# ADR-004
-
-## Título
-
-Aplicação incremental da Clean Architecture
-
-### Status
-
-Aceita
-
-### Data
-
-Julho de 2026
-
-### Contexto
-
-O GameHub API 1.0 já possui uma estrutura funcional baseada em camadas tradicionais.
-
-Migrar toda a solução para Clean Architecture em uma única etapa aumentaria o risco de erros e dificultaria o aprendizado.
-
-### Decisão
-
-Aplicar a Clean Architecture de forma incremental durante a evolução do projeto.
-
-### Justificativa
-
-Essa abordagem permite compreender cada alteração, manter a aplicação funcional e validar cada etapa antes da próxima 
-refatoração.
-
-### Consequências
-
-A arquitetura será evoluída gradualmente, preservando estabilidade e facilitando testes.
-
----
-
-## ADR-005 — Centralização do acesso ao usuário autenticado
+Evolution from GameHub API 1.0 to GameHub API 2.0
 
 ### Status
 
 Accepted
 
-### Contexto
+### Date
 
-Os controllers estavam acessando diretamente as claims do usuário autenticado por meio de `HttpContext.User`.
+July 2026
 
-Esse padrão gerava repetição de código e fazia os controllers conhecerem detalhes da implementação de autenticação, como `ClaimTypes` e a estrutura do token JWT.
+### Context
 
-### Decisão
+GameHub API 1.0 already provided a functional backend including JWT authentication, player management, achievements, save games and leaderboards.
 
-Foi criada a abstração:
+The second phase of the project required a more robust architecture, automated testing, commercial features, observability and deployment infrastructure.
 
-`ICurrentUser`
+### Decision
 
-E sua implementação:
+Instead of starting from scratch, the existing project would evolve incrementally into GameHub API 2.0.
 
-`CurrentUserService`
+### Rationale
 
-A implementação utiliza `IHttpContextAccessor` para obter os dados do usuário autenticado na requisição atual.
+Real-world software evolves continuously. Building upon an existing codebase better reflects professional software development.
 
-O serviço foi registrado com ciclo de vida `Scoped`, garantindo uma instância por requisição HTTP.
+### Consequences
 
-### Consequências
+The application will continue to evolve incrementally while maintaining backward compatibility whenever possible.
 
-- Controllers deixam de acessar claims diretamente.
-- A leitura do usuário autenticado fica centralizada.
-- Mudanças futuras no mecanismo de autenticação ficam isoladas.
-- O código fica mais simples de testar.
-- Reduzimos duplicação e acoplamento com o ASP.NET Core.
+---
+
+# ADR-002
+
+## Title
+
+Adoption of the GameHub Domain
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+The original educational project was based on courses, students and enrollments.
+
+### Decision
+
+Adapt the business domain to represent a digital gaming platform.
+
+### Rationale
+
+A game-oriented domain aligns with the author's professional goals and produces a stronger portfolio.
+
+### Consequences
+
+Future features will follow the GameHub domain language rather than the original educational terminology.
+
+---
+
+# ADR-003
+
+## Title
+
+Blazor as the Official Frontend Technology
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+The project initially consisted only of a Web API.
+
+### Decision
+
+Use Blazor as the official frontend technology.
+
+### Rationale
+
+Blazor allows the entire application to remain within the .NET ecosystem while sharing knowledge, tooling and architectural concepts.
+
+### Consequences
+
+The project will evolve into a complete full-stack .NET application.
+
+---
+
+# ADR-004
+
+## Title
+
+Incremental Clean Architecture Migration
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+Migrating directly to a full Clean Architecture would introduce unnecessary risk and complexity.
+
+### Decision
+
+Adopt an incremental migration strategy.
+
+### Rationale
+
+Small, validated improvements reduce risk and preserve application stability.
+
+### Consequences
+
+The solution will progressively evolve into separate Application, Domain and Infrastructure projects.
+
+---
+
+# ADR-005
+
+## Title
+
+Centralized Current User Abstraction
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+Controllers were directly reading JWT claims through HttpContext.
+
+### Decision
+
+Introduce the ICurrentUser abstraction implemented by CurrentUserService.
+
+### Rationale
+
+Centralizes authentication concerns and improves testability.
+
+### Consequences
+
+Controllers no longer depend directly on authentication implementation details.
 
 ---
 
 # ADR-006
 
-## Título
+## Title
 
-Introdução do Result Pattern para tratamento de falhas de negócio
+Adoption of the Result Pattern
 
 ### Status
 
-Aceita
+Accepted
 
-### Data
+### Date
 
-Julho de 2026
+July 2026
 
-### Contexto
+### Context
 
-Os serviços da aplicação lançavam exceções para representar falhas previsíveis de negócio, como produto inexistente ou quantidade inválida.
+Business services were using exceptions for expected validation failures.
 
-Essa abordagem misturava erros inesperados com regras de negócio e fazia o middleware tratar situações que não eram exceções reais.
+### Decision
 
-### Decisão
+Introduce Result, Result<T> and Error classes.
 
-Foi introduzido um Result Pattern composto pelas classes:
+### Rationale
 
-- `Result`
-- `Result<T>`
-- `Error`
+Business failures should be represented explicitly instead of relying on exceptions.
 
-Os serviços passaram a retornar resultados explícitos de sucesso ou falha, substituindo exceções para cenários previsíveis.
+### Consequences
 
-### Justificativa
-
-Essa abordagem torna o fluxo da aplicação mais explícito, facilita os testes unitários e reduz o uso de exceções para controle de fluxo.
-
-Além disso, separa claramente falhas de negócio de erros inesperados da aplicação.
-
-### Consequências
-
-- Serviços retornam `Result<T>`.
-- Controllers interpretam os resultados retornados pelos serviços.
-- O middleware permanece responsável apenas por exceções inesperadas.
-- A arquitetura torna-se mais previsível e preparada para testes.
+Services return Result<T>, controllers interpret business outcomes, and exceptions remain reserved for unexpected failures.
 
 ---
 
 # ADR-007
 
-## Título
+## Title
 
-Criação de uma infraestrutura própria de validação
+Custom Validation Infrastructure
 
 ### Status
 
-Aceita
+Accepted
 
-### Data
+### Date
 
-Julho de 2026
+July 2026
 
-### Contexto
+### Context
 
-Os controllers continham validações estruturais repetidas utilizando instruções `if`, enquanto os serviços também precisavam validar regras básicas de entrada.
+Validation logic was duplicated across controllers.
 
-Essa abordagem aumentava a duplicação de código e misturava responsabilidades.
+### Decision
 
-### Decisão
+Create a reusable validation infrastructure based on IValidator<T>.
 
-Foi criada uma infraestrutura própria de validação composta por:
+### Rationale
 
-- `IValidator<T>`
-- `ValidationErrors`
-- Validators específicos por caso de uso
+Separate input validation from business logic while improving code reuse.
 
-Todos os validators passaram a ser registrados através da extensão:
+### Consequences
 
-```csharp
-builder.Services.AddValidation();
-```
-
-### Justificativa
-
-A infraestrutura permite separar validação estrutural das regras de negócio, reduz duplicação e mantém os serviços focados apenas na lógica da aplicação.
-
-Também prepara a arquitetura para crescimento futuro sem depender inicialmente de bibliotecas externas.
-
-### Consequências
-
-- Controllers executam validações antes dos serviços.
-- Serviços continuam protegendo as regras de negócio.
-- Validações tornam-se reutilizáveis.
-- Novos módulos seguem o mesmo padrão arquitetural.
+Controllers remain lightweight and validation becomes reusable across the application.
 
 ---
 
 # ADR-008
 
-## Título
+## Title
 
-Padronização das respostas HTTP da API
+Standardized API Responses
 
 ### Status
 
-Aceita
+Accepted
 
-### Data
+### Date
 
-Julho de 2026
+July 2026
 
-### Contexto
+### Context
 
-Os controllers retornavam objetos anônimos para representar erros de validação e regras de negócio.
+Controllers returned inconsistent HTTP error responses.
 
-Isso dificultava a padronização das respostas e aumentava a repetição de código.
+### Decision
 
-### Decisão
+Create standardized response models and reusable Controller Extensions.
 
-Foram criados os DTOs:
+### Rationale
 
-- `ValidationErrorResponse`
-- `ApiErrorResponse`
+Provide a consistent API contract and simplify controller implementations.
 
-Também foi criada a classe:
+### Consequences
 
-- `ControllerExtensions`
-
-responsável por centralizar respostas HTTP reutilizáveis, como:
-
-- `ValidationFailed()`
-- `BadRequestError()`
-- `NotFoundError()`
-
-### Justificativa
-
-Centralizar a criação das respostas reduz duplicação, melhora a documentação do Swagger e facilita futuras alterações no formato das respostas.
-
-### Consequências
-
-- Todos os controllers podem reutilizar o mesmo padrão de resposta.
-- O formato das respostas torna-se consistente em toda a API.
-- Mudanças futuras serão realizadas em apenas um local.
+All controllers follow the same response format.
 
 ---
 
 # ADR-009
 
-## Título
+## Title
 
-Centralização do mapeamento entre entidades e DTOs
+Centralized Entity Mapping
 
 ### Status
 
-Aceita
+Accepted
 
-### Data
+### Date
 
-Julho de 2026
+July 2026
 
-### Contexto
+### Context
 
-O mapeamento entre entidades e DTOs estava sendo repetido em diversos endpoints, aumentando o tamanho dos controllers e dificultando futuras alterações.
+Entity-to-DTO mapping was duplicated across multiple endpoints.
 
-### Decisão
+### Decision
 
-Foi criada a classe:
+Move mappings into dedicated Extension Methods.
 
-- `PurchaseMappings`
+### Rationale
 
-utilizando Extension Methods para converter entidades em DTOs.
+Reduce duplication and improve maintainability.
 
-Exemplo:
+### Consequences
 
-```csharp
-purchase.ToResponse();
-```
+Controllers remain focused on request handling rather than object transformation.
 
-### Justificativa
+---
 
-Centralizar os mapeamentos reduz duplicação, melhora a legibilidade dos controllers e facilita futuras alterações nos contratos da API.
+# ADR-010
 
-### Consequências
+## Title
 
-- Controllers deixam de conter lógica de mapeamento.
-- O código torna-se mais limpo e reutilizável.
-- Alterações em DTOs passam a ser realizadas em apenas um local.
-- O padrão poderá ser reutilizado para Players, Games, Achievements, SaveGames e demais módulos da aplicação.
+Test-Driven Backend Evolution
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+The backend architecture became increasingly complex as new features were introduced.
+
+### Decision
+
+Introduce automated unit testing before continuing with infrastructure evolution.
+
+### Rationale
+
+Automated tests provide confidence for future refactoring and architectural improvements.
+
+### Consequences
+
+The project currently includes 34 automated unit tests, with additional integration tests planned.
+
+---
+
+# ADR-011
+
+## Title
+
+Documentation as a First-Class Artifact
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+As the project grew, architectural knowledge became increasingly difficult to preserve.
+
+### Decision
+
+Maintain dedicated technical documentation throughout development.
+
+### Rationale
+
+Good documentation improves maintainability, onboarding and long-term project quality.
+
+### Consequences
+
+Architecture, domain model, permissions, backlog and ADRs evolve together with the source code.
+
+---
+
+# Future ADRs
+
+The following architectural decisions are expected during future development:
+
+- Structured Logging Strategy
+- Observability and Health Checks
+- Docker Containerization
+- CI/CD Pipeline
+- Clean Architecture Separation
+- Production Deployment Strategy
+- API Versioning
+- Caching Strategy
+- Background Processing
+- Event-Driven Integrations
+
+---
+
+# Current ADR Status
+
+| ADR | Status |
+|------|--------|
+| ADR-001 | ✅ Accepted |
+| ADR-002 | ✅ Accepted |
+| ADR-003 | ✅ Accepted |
+| ADR-004 | ✅ Accepted |
+| ADR-005 | ✅ Accepted |
+| ADR-006 | ✅ Accepted |
+| ADR-007 | ✅ Accepted |
+| ADR-008 | ✅ Accepted |
+| ADR-009 | ✅ Accepted |
+| ADR-010 | ✅ Accepted |
+| ADR-011 | ✅ Accepted |

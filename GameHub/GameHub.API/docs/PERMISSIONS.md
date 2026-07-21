@@ -1,116 +1,219 @@
-# 🔐 Matriz de Permissões — GameHub API 2.0
+# 🔐 Permissions Matrix — GameHub API 2.0
 
-## Objetivo
+## Purpose
 
-Este documento define quais funcionalidades podem ser acessadas por usuários públicos, usuários autenticados e 
-administradores.
+This document defines the authorization model adopted by GameHub API 2.0.
 
-A matriz servirá como referência para:
+It specifies which resources each user role can access and documents the security rules applied throughout the application.
 
-- configuração de autenticação e autorização;
-- criação de roles e policies;
-- proteção dos endpoints;
-- implementação das regras de propriedade dos dados;
-- criação dos testes de autorização.
+This document serves as a reference for:
+
+- Authentication
+- Authorization
+- Role management
+- Ownership validation
+- API security
+- Automated authorization tests
 
 ---
 
-# Perfis de acesso
+# User Roles
 
 ## Public
 
-Representa qualquer pessoa que ainda não esteja autenticada no sistema.
+Represents any unauthenticated visitor.
 
-Pode acessar apenas funcionalidades públicas, como registro, login, documentação pública e consulta ao leaderboard.
+Capabilities:
+
+- Register an account
+- Login
+- Browse public information
+- View public leaderboards
+- View public games
+
+---
 
 ## User
 
-Representa um usuário autenticado comum.
+Represents an authenticated player.
 
-Pode criar, consultar e gerenciar apenas os próprios dados, como jogadores, saves, conquistas, compras e pagamentos.
+Capabilities:
 
-## Admin
+- Manage personal profile
+- Manage owned players
+- Manage save games
+- Unlock achievements
+- Purchase digital products
+- Manage own payments
+- Access owned resources
 
-Representa um administrador do sistema.
-
-Pode consultar e administrar dados de todos os usuários, além de executar operações de auditoria e manutenção.
-
----
-
-# Regras gerais
-
-- O usuário comum só pode acessar dados vinculados ao próprio `UserId`.
-- O administrador pode consultar dados de qualquer usuário.
-- Endpoints protegidos devem exigir token JWT válido.
-- Operações administrativas devem exigir a role `Admin`.
-- A aplicação não deve confiar apenas em IDs enviados pelo cliente.
-- A propriedade do recurso deve ser validada utilizando o `UserId` presente no token.
-- Dados sensíveis nunca devem ser retornados nas respostas da API.
-- Um usuário autenticado não se torna administrador apenas por enviar uma role na requisição.
+Users are never allowed to access resources owned by other users.
 
 ---
 
-# Matriz de permissões
+## Administrator
 
-| Funcionalidade | Public | User | Admin |
-|---|:---:|:---:|:---:|
-| Registrar conta | ✅ | ✅ | ✅ |
-| Fazer login | ✅ | ✅ | ✅ |
-| Acessar Swagger | ✅ | ✅ | ✅ |
-| Autorizar no Swagger com JWT | ❌ | ✅ | ✅ |
-| Consultar leaderboard | ✅ | ✅ | ✅ |
-| Consultar lista pública de jogos | ✅ | ✅ | ✅ |
-| Consultar detalhes de um jogo | ✅ | ✅ | ✅ |
-| Consultar próprio perfil | ❌ | ✅ | ✅ |
-| Atualizar próprio perfil | ❌ | ✅ | ✅ |
-| Consultar perfil de outro usuário | ❌ | ❌ | ✅ |
-| Criar jogador próprio | ❌ | ✅ | ✅ |
-| Consultar jogadores próprios | ❌ | ✅ | ✅ |
-| Atualizar jogador próprio | ❌ | ✅ | ✅ |
-| Excluir jogador próprio | ❌ | ✅ | ✅ |
-| Consultar jogador de outro usuário | ❌ | ❌ | ✅ |
-| Criar save game próprio | ❌ | ✅ | ✅ |
-| Consultar saves próprios | ❌ | ✅ | ✅ |
-| Atualizar save próprio | ❌ | ✅ | ✅ |
-| Excluir save próprio | ❌ | ✅ | ✅ |
-| Consultar save de outro usuário | ❌ | ❌ | ✅ |
-| Consultar conquistas disponíveis | ✅ | ✅ | ✅ |
-| Desbloquear conquista própria | ❌ | ✅ | ✅ |
-| Consultar conquistas próprias | ❌ | ✅ | ✅ |
-| Consultar conquistas de outro usuário | ❌ | ❌ | ✅ |
-| Criar produto digital | ❌ | ❌ | ✅ |
-| Atualizar produto digital | ❌ | ❌ | ✅ |
-| Excluir produto digital | ❌ | ❌ | ✅ |
-| Criar compra própria | ❌ | ✅ | ✅ |
-| Consultar compras próprias | ❌ | ✅ | ✅ |
-| Consultar compra de outro usuário | ❌ | ❌ | ✅ |
-| Criar intenção de pagamento | ❌ | ✅ | ✅ |
-| Confirmar pagamento próprio | ❌ | ✅ | ✅ |
-| Consultar pagamentos próprios | ❌ | ✅ | ✅ |
-| Consultar pagamento de outro usuário | ❌ | ❌ | ✅ |
-| Listar todos os pagamentos | ❌ | ❌ | ✅ |
-| Estornar pagamento | ❌ | ❌ | ✅ |
-| Consultar logs administrativos | ❌ | ❌ | ✅ |
-| Consultar health check público | ✅ | ✅ | ✅ |
-| Consultar health check detalhado | ❌ | ❌ | ✅ |
+Represents a system administrator.
+
+Capabilities:
+
+- Full system administration
+- Manage users
+- Manage products
+- View all purchases
+- View all payments
+- Perform administrative operations
+- Access monitoring endpoints
+
+Administrators bypass ownership restrictions while still respecting authentication requirements.
 
 ---
 
-# Regras de propriedade
+# General Security Rules
 
-## Players
+The following rules apply across the entire application:
 
-Um usuário comum só pode acessar jogadores vinculados ao próprio `UserId`.
+- JWT authentication is required for protected endpoints.
+- Authentication is validated before authorization.
+- Resource ownership is always verified.
+- Business rules never rely on client-provided identifiers alone.
+- Sensitive information must never be exposed in API responses.
+- Administrative operations require the **Admin** role.
+- Authorization failures return appropriate HTTP status codes.
 
-Exemplo:
+---
+
+# Ownership Validation
+
+Ownership is one of the most important security principles in GameHub.
+
+Example:
 
 ```text
-Token UserId: 10
-Player UserId: 10
-Resultado: acesso permitido
+Authenticated User
+UserId = 10
 
---->
+Requested Player
+UserId = 10
 
-Token UserId: 10
-Player UserId: 25
-Resultado: acesso negado
+Result
+✔ Access Granted
+```
+
+---
+
+```text
+Authenticated User
+UserId = 10
+
+Requested Player
+UserId = 25
+
+Result
+❌ Access Denied
+```
+
+Controllers never trust IDs received from the client without validating ownership.
+
+---
+
+# Permission Matrix
+
+| Feature | Public | User | Admin |
+|---------|:------:|:----:|:-----:|
+| Register Account | ✅ | ✅ | ✅ |
+| Login | ✅ | ✅ | ✅ |
+| View Swagger | ✅ | ✅ | ✅ |
+| Authenticate with JWT | ❌ | ✅ | ✅ |
+| View Public Games | ✅ | ✅ | ✅ |
+| View Game Details | ✅ | ✅ | ✅ |
+| View Leaderboards | ✅ | ✅ | ✅ |
+| View Own Profile | ❌ | ✅ | ✅ |
+| Update Own Profile | ❌ | ✅ | ✅ |
+| View Other User Profiles | ❌ | ❌ | ✅ |
+| Manage Own Players | ❌ | ✅ | ✅ |
+| Manage Own Save Games | ❌ | ✅ | ✅ |
+| View Own Achievements | ❌ | ✅ | ✅ |
+| Unlock Achievements | ❌ | ✅ | ✅ |
+| Create Purchases | ❌ | ✅ | ✅ |
+| View Own Purchases | ❌ | ✅ | ✅ |
+| View Other User Purchases | ❌ | ❌ | ✅ |
+| Create Payments | ❌ | ✅ | ✅ |
+| View Own Payments | ❌ | ✅ | ✅ |
+| View All Payments | ❌ | ❌ | ✅ |
+| Manage Game Products | ❌ | ❌ | ✅ |
+| Administrative Operations | ❌ | ❌ | ✅ |
+| View Public Health Checks *(future)* | ✅ | ✅ | ✅ |
+| View Detailed Health Checks *(future)* | ❌ | ❌ | ✅ |
+
+---
+
+# Authorization Strategy
+
+The project currently combines three authorization mechanisms:
+
+## Authentication
+
+JWT Bearer Tokens identify the authenticated user.
+
+---
+
+## Role-Based Authorization
+
+Administrative endpoints require the **Admin** role.
+
+Example:
+
+- Product management
+- Administrative monitoring
+- Payment auditing
+
+---
+
+## Resource Ownership
+
+Users may only manipulate resources they own.
+
+Ownership is validated using the authenticated user's identifier obtained from the JWT token through the `ICurrentUser` abstraction.
+
+---
+
+# Future Authorization Improvements
+
+The following improvements are planned for future versions:
+
+- Policy-Based Authorization
+- Resource-Based Authorization
+- Fine-Grained Permissions
+- Permission Claims
+- Audit Logging
+- Administrative Activity Tracking
+
+---
+
+# Security Principles
+
+GameHub API follows these security principles:
+
+- Authentication before authorization
+- Least privilege principle
+- Explicit ownership validation
+- Centralized user identity access
+- Standardized authorization behavior
+- Secure default configuration
+
+---
+
+# Current Status
+
+| Security Component | Status |
+|--------------------|--------|
+| JWT Authentication | ✅ |
+| Role-Based Authorization | ✅ |
+| Ownership Validation | ✅ |
+| CurrentUser Abstraction | ✅ |
+| Protected Endpoints | ✅ |
+| Standardized Responses | ✅ |
+| Automated Unit Tests | ✅ |
+| Policy-Based Authorization | ⏳ Planned |
+| Audit Logging | ⏳ Planned |
