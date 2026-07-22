@@ -1,6 +1,6 @@
 # 🎮 GameHub API 2.0
 
-![CI](https://github.com/SEU-USUARIO/gamehub-api_2.0/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/UlyssesSilveiraPita/gamehub-api_2.0/actions/workflows/ci.yml/badge.svg)
 
 REST API for Game Services built with ASP.NET Core 8, Entity Framework Core, SQLite, Identity and JWT Authentication.
 
