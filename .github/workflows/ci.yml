@@ -30,6 +30,10 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: |
+            GameHub/GameHub.API/packages.lock.json
+            GameHub/GameHub.Tests/packages.lock.json
 
       - name: Restore dependencies
         run: dotnet restore GameHub/GameHub.sln
