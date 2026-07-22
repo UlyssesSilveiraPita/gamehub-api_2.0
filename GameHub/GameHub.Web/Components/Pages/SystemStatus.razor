@@ -1,0 +1,36 @@
+﻿@page "/system-status"
+
+@using GameHub.Web.Services.Abstractions
+@inject IApiHealthService ApiHealthService
+
+<PageTitle>System Status</PageTitle>
+
+<h1>System Status</h1>
+
+@if (_isLoading)
+{
+    <p>Checking API availability...</p>
+}
+else if (_isApiHealthy)
+{
+    <div class="alert alert-success" role="alert">
+        GameHub API is online.
+    </div>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        GameHub API is unavailable.
+    </div>
+}
+
+@code {
+    private bool _isLoading = true;
+    private bool _isApiHealthy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isApiHealthy = await ApiHealthService.IsHealthyAsync();
+        _isLoading = false;
+    }
+}
