@@ -1,5 +1,7 @@
 # 🎮 GameHub API 2.0
 
+![CI](https://github.com/SEU-USUARIO/gamehub-api_2.0/actions/workflows/ci.yml/badge.svg)
+
 REST API for Game Services built with ASP.NET Core 8, Entity Framework Core, SQLite, Identity and JWT Authentication.
 
 ## 🇧🇷 Português
@@ -7,6 +9,25 @@ REST API for Game Services built with ASP.NET Core 8, Entity Framework Core, SQL
 GameHub API é uma API REST desenvolvida em ASP.NET Core 8 para gerenciamento de jogadores, conquistas, save games e rankings de jogos.
 
 O projeto foi criado com foco em boas práticas de desenvolvimento backend utilizando C#, Entity Framework Core, SQLite, Identity e autenticação JWT.
+
+---
+
+# 🚀 Continuous Integration
+
+GameHub API 2.0 uses GitHub Actions to automatically validate every commit pushed to the repository.
+
+The CI pipeline performs the following tasks:
+
+- ✅ Restore project dependencies
+- ✅ Build the solution
+- ✅ Execute all automated tests
+- ✅ Cache NuGet packages
+- ✅ Upload test artifacts
+- ✅ Validate Docker image build
+- ✅ Prevent concurrent workflow execution
+- ✅ Enforce execution timeout
+
+This guarantees that every commit maintains the project's integrity and build quality.
 
 ---
 
