@@ -17,7 +17,7 @@ Rather than listing isolated tasks, the roadmap is organized into development ph
 | Application Layer | ✅ Completed |
 | Observability | ✅ Completed |
 | Docker | ✅ Completed |
-| CI/CD | ⏳ Planned |
+| CI/CD | ✅ Completed |
 | Blazor Frontend | ⏳ Planned |
 | Production Release | ⏳ Planned |
 
