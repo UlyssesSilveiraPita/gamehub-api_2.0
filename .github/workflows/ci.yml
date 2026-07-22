@@ -59,7 +59,7 @@ jobs:
           docker build
           --file GameHub/GameHub.API/Dockerfile
           --tag gamehub-api:ci
-          GameHub
+          GameHub/GameHub.API
 
       - name: Upload test results
         if: always()
