@@ -1,23 +1,56 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+<div class="app-page">
+    <aside class="sidebar">
         <NavMenu />
+    </aside>
+
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="header-context">
+                <span class="header-eyebrow">
+                    Calisto Interactive
+                </span>
+
+                <span class="header-title">
+                    GameHub
+                </span>
+            </div>
+
+            <div class="header-actions">
+                <span class="environment-badge">
+                    <span class="environment-indicator"
+                          aria-hidden="true"></span>
+
+                    Frontend Preview
+                </span>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <article class="content">
+                @Body
+            </article>
+        </main>
+
+        <footer class="app-footer">
+            <span>
+                © @DateTime.UtcNow.Year Calisto Interactive
+            </span>
+
+            <span>
+                GameHub Platform
+            </span>
+        </footer>
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
 </div>
 
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
+    <span>An unexpected error has occurred.</span>
     <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <button type="button"
+            class="dismiss"
+            aria-label="Dismiss error">
+        ×
+    </button>
 </div>

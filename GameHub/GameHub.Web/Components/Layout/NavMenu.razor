@@ -1,30 +1,62 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">GameHub.Web</a>
-    </div>
+﻿<div class="nav-header">
+    <a class="brand-link" href="" aria-label="GameHub home">
+        <img src="images/brand/calisto-interactive-logo.png?v=2"
+             alt="Calisto Interactive"
+             class="brand-logo" />
+
+        <span class="brand-product">
+            <strong>GameHub</strong>
+            <small>Gaming Platform</small>
+        </span>
+    </a>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<input type="checkbox"
+       title="Toggle navigation menu"
+       aria-label="Toggle navigation menu"
+       class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+<div class="nav-scrollable"
+     onclick="document.querySelector('.navbar-toggler').click()">
+
+    <nav class="nav-content" aria-label="Main navigation">
+        <div>
+            <p class="nav-section-label">Platform</p>
+
+            <div class="nav-item">
+                <NavLink class="nav-link"
+                         href=""
+                         Match="NavLinkMatch.All">
+                    <svg class="nav-icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+                        <path d="M3 10.75 12 3l9 7.75v9.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75V15h-4v5.25a.75.75 0 0 1-.75.75h-5.5A.75.75 0 0 1 3 20.25v-9.5Z" />
+                    </svg>
+
+                    <span>Home</span>
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="system-status">
+                    <svg class="nav-icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+                        <path d="M3 12h4l2-6 4 12 2-6h6" />
+                    </svg>
+
+                    <span>System Status</span>
+                </NavLink>
+            </div>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+        <div class="nav-footer">
+            <span class="phase-indicator" aria-hidden="true"></span>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
+            <span>
+                <strong>Phase 7</strong>
+                <small>Frontend Foundation</small>
+            </span>
         </div>
     </nav>
 </div>
-
