@@ -32,10 +32,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        run: dotnet restore GameHub.sln
+        run: dotnet restore GameHub/GameHub.sln
 
       - name: Build solution
-        run: dotnet build GameHub.sln --configuration Release --no-restore
+        run: dotnet build GameHub/GameHub.sln --configuration Release --no-restore
 
       - name: Run automated tests
-        run: dotnet test GameHub.sln --configuration Release --no-build
+        run: dotnet test GameHub/GameHub.sln --configuration Release --no-build
