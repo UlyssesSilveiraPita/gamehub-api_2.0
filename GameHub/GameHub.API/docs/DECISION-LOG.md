@@ -333,7 +333,9 @@ Automated tests provide confidence for future refactoring and architectural impr
 
 ### Consequences
 
-The project currently includes 34 automated unit tests, with additional integration tests planned.
+The project currently includes 40 automated unit tests covering the most important infrastructure and business components.
+
+The automated test suite provides confidence for future feature development and architectural evolution, while additional integration tests may be introduced as the platform continues to grow.
 
 ---
 
@@ -373,16 +375,15 @@ Architecture, domain model, permissions, backlog and ADRs evolve together with t
 
 The following architectural decisions are expected during future development:
 
-- Structured Logging Strategy
-- Observability and Health Checks
-- Docker Containerization
-- CI/CD Pipeline
-- Clean Architecture Separation
+- Blazor Frontend Architecture
 - Production Deployment Strategy
 - API Versioning
 - Caching Strategy
 - Background Processing
 - Event-Driven Integrations
+- Real Payment Gateway Integration
+- Notifications
+- Background Jobs
 
 ---
 

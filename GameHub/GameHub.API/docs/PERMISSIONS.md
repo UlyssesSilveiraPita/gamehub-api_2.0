@@ -143,8 +143,8 @@ Controllers never trust IDs received from the client without validating ownershi
 | View All Payments | ❌ | ❌ | ✅ |
 | Manage Game Products | ❌ | ❌ | ✅ |
 | Administrative Operations | ❌ | ❌ | ✅ |
-| View Public Health Checks *(future)* | ✅ | ✅ | ✅ |
-| View Detailed Health Checks *(future)* | ❌ | ❌ | ✅ |
+| View Public Health Checks | ✅ | ✅ | ✅ |
+| View Detailed Health Checks | ❌ | ❌ | ✅ |
 
 ---
 
@@ -200,9 +200,9 @@ This security model is considered stable and provides a solid foundation for fut
 
 # Future Improvements
 
-The current permission model is intentionally simple and maintainable.
+The current authorization model is intentionally simple, secure, and maintainable.
 
-Future platform growth may introduce additional authorization scenarios such as:
+Future platform growth may introduce additional authorization capabilities such as:
 
 - Policy-based Authorization
 - Permission-based Authorization
@@ -210,8 +210,10 @@ Future platform growth may introduce additional authorization scenarios such as:
 - Audit Logging
 - Multi-Tenant Support
 - External Identity Providers (Google, Microsoft, Steam)
+- Two-Factor Authentication (2FA)
+- OAuth/OpenID Connect integrations
 
-These improvements are not required for the current project scope but can be incorporated without major architectural changes.
+These enhancements are not required for the current scope of GameHub API 2.0 but can be introduced without major architectural changes.
 
 ---
 
