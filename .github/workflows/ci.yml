@@ -57,7 +57,7 @@ jobs:
       - name: Build Docker image
         run: >
           docker build
-          --file GameHub/Dockerfile
+          --file GameHub/GameHub.API/Dockerfile
           --tag gamehub-api:ci
           GameHub
 
