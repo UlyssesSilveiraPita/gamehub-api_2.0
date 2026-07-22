@@ -375,7 +375,6 @@ Architecture, domain model, permissions, backlog and ADRs evolve together with t
 
 The following architectural decisions are expected during future development:
 
-- Blazor Frontend Architecture
 - Production Deployment Strategy
 - API Versioning
 - Caching Strategy
@@ -402,6 +401,9 @@ The following architectural decisions are expected during future development:
 | ADR-009 | ✅ Accepted |
 | ADR-010 | ✅ Accepted |
 | ADR-011 | ✅ Accepted |
+| ADR-012 | ✅ Accepted |
+| ADR-013 | ✅ Accepted |
+| ADR-014 | ✅ Accepted |
 
 ---
 
@@ -500,3 +502,90 @@ Test-first evolution increases confidence, preserves stability and supports futu
 - New refactorings require measurable technical justification.
 - Automated tests become the primary safety net for future evolution.
 - Incremental improvements remain the preferred development strategy.
+
+---
+
+# ADR-014
+
+## Title
+
+Blazor Frontend Architecture
+
+### Status
+
+Accepted
+
+### Date
+
+July 2026
+
+### Context
+
+GameHub API 2.0 has completed its backend foundation, application services, automated testing, observability, containerization and CI/CD phases.
+
+The backend is considered stable and must continue evolving through safe and incremental additions.
+
+The next phase of the platform requires a professional web interface for authentication, player management, save games, achievements, leaderboards, game products, purchases and payments.
+
+The frontend must remain independent from the internal implementation of the API and must not require structural changes to the existing backend.
+
+The following frontend approaches were considered:
+
+- Blazor WebAssembly
+- Blazor Server
+- Blazor Web App with Interactive Server rendering
+
+Blazor WebAssembly would introduce additional initial complexity involving browser-side token storage, CORS configuration, larger initial downloads and direct communication between the browser and the API.
+
+A Blazor Web App using Interactive Server provides a simpler and safer starting point while preserving the ability to evolve the frontend architecture in the future.
+
+### Decision
+
+Add a new project named `GameHub.Web` to the existing solution.
+
+The frontend will use:
+
+- .NET 8
+- Blazor Web App
+- Interactive Server render mode
+- Typed HTTP services for API communication
+- Dedicated frontend contracts
+- Centralized authentication state
+- Reusable UI components
+- Configuration-based API addresses
+
+`GameHub.Web` will communicate with `GameHub.API` exclusively through HTTP.
+
+The frontend will not reference `GameHub.API` directly through a project reference.
+
+Backend entities, Entity Framework configurations and internal services will not be shared with the frontend.
+
+The frontend will define its own request and response contracts based on the public HTTP contracts exposed by the API.
+
+Pages and components will not use `HttpClient` directly. Communication with the API will be handled through dedicated services and a centralized API client infrastructure.
+
+### Rationale
+
+This architecture preserves the API as an independent backend and prevents the frontend from becoming coupled to its internal implementation.
+
+Interactive Server rendering reduces the initial complexity of authentication, browser-side token management and cross-origin communication.
+
+Dedicated frontend contracts make the HTTP boundary explicit and allow both applications to evolve independently.
+
+Centralized API communication provides consistent handling for authentication, validation errors, unavailable resources and unexpected failures.
+
+The approach also allows future clients, such as Blazor WebAssembly, mobile applications or game launchers, to consume the same API without requiring changes to the backend architecture.
+
+### Consequences
+
+- A new `GameHub.Web` project will be added to the solution.
+- The existing `GameHub.API` project will remain structurally unchanged.
+- The frontend and backend will communicate only through HTTP.
+- No project reference from `GameHub.Web` to `GameHub.API` will be created.
+- Frontend contracts may intentionally resemble API DTOs but will remain independent.
+- Authentication and API error handling will be centralized in the frontend.
+- UI components will remain independent from transport and persistence concerns.
+- New backend endpoints will be introduced only when required by concrete frontend features.
+- Existing backend behavior must remain protected by the automated test suite.
+- The solution build and all automated tests must remain successful after each incremental change.
+- The frontend may evolve to additional render modes in the future if a concrete product requirement justifies the change.
