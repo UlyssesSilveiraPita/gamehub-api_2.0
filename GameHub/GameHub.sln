@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHub.Web", "GameHub.Web\GameHub.Web.csproj", "{F80B82A0-F22C-4403-B774-355F095C692C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9F816897-4301-4BA2-98F1-DA5A87F6E898}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F816897-4301-4BA2-98F1-DA5A87F6E898}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F816897-4301-4BA2-98F1-DA5A87F6E898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F80B82A0-F22C-4403-B774-355F095C692C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F80B82A0-F22C-4403-B774-355F095C692C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F80B82A0-F22C-4403-B774-355F095C692C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F80B82A0-F22C-4403-B774-355F095C692C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
