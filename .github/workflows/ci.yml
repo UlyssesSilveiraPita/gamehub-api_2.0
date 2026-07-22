@@ -38,4 +38,18 @@ jobs:
         run: dotnet build GameHub/GameHub.sln --configuration Release --no-restore
 
       - name: Run automated tests
-        run: dotnet test GameHub/GameHub.sln --configuration Release --no-build
+        run: >
+          dotnet test GameHub/GameHub.sln
+          --configuration Release
+          --no-build
+          --logger "trx;LogFileName=gamehub-tests.trx"
+          --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gamehub-test-results
+          path: TestResults/
+          if-no-files-found: error
+          retention-days: 14
