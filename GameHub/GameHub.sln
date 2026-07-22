@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHub.Tests", "GameHub.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{7CF601D7-E88D-46C5-B039-53A052E8C63F}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\ci.yml = .github\workflows\ci.yml
+		..\.github\workflows\ci.yml = ..\.github\workflows\ci.yml
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
