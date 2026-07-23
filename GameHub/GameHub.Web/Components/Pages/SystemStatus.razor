@@ -1,36 +1,134 @@
 ﻿@page "/system-status"
+@implements IDisposable
 
 @using GameHub.Web.Services.Abstractions
 @inject IApiHealthService ApiHealthService
 
-<PageTitle>System Status</PageTitle>
+<PageTitle>System Status | GameHub</PageTitle>
 
-<h1>System Status</h1>
+<PageHeader Eyebrow="Platform Health"
+            Title="System Status"
+            Description="Live connectivity status between the GameHub frontend and its backend services.">
+
+    <Actions>
+        <button class="btn btn-primary"
+                type="button"
+                disabled="@_isLoading"
+                @onclick="CheckApiAsync">
+            @(_isLoading ? "Checking..." : "Check again")
+        </button>
+    </Actions>
+</PageHeader>
 
 @if (_isLoading)
 {
-    <p>Checking API availability...</p>
+    <LoadingIndicator Message="Checking API availability"
+                      Description="Establishing a secure connection with GameHub services." />
 }
 else if (_isApiHealthy)
 {
-    <div class="alert alert-success" role="alert">
-        GameHub API is online.
-    </div>
+    <section class="status-panel status-panel-online">
+        <div class="status-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+                <path d="m5 12 4 4L19 6"></path>
+            </svg>
+        </div>
+
+        <div class="status-copy">
+            <span class="service-label">GameHub API</span>
+            <h2>All systems operational</h2>
+
+            <p>
+                The frontend successfully connected to the backend
+                health endpoint.
+            </p>
+        </div>
+
+        <StatusBadge Tone="StatusTone.Success">
+            Operational
+        </StatusBadge>
+    </section>
 }
 else
 {
-    <div class="alert alert-danger" role="alert">
-        GameHub API is unavailable.
+    <section class="status-panel status-panel-offline">
+        <div class="status-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 8v5"></path>
+                <path d="M12 17h.01"></path>
+                <path d="M10.3 3.8 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.8a2 2 0 0 0-3.4 0Z"></path>
+            </svg>
+        </div>
+
+        <div class="status-copy">
+            <span class="service-label">GameHub API</span>
+            <h2>Service unavailable</h2>
+
+            <p>
+                The frontend could not reach the backend. Confirm that
+                GameHub.API is running and try again.
+            </p>
+        </div>
+
+        <StatusBadge Tone="StatusTone.Danger">
+            Unavailable
+        </StatusBadge>
+    </section>
+}
+
+@if (_lastCheckedAt is not null)
+{
+    <div class="status-metadata">
+        <span>Endpoint: <strong>/health</strong></span>
+
+        <span>
+            Last checked:
+            <strong>
+                @_lastCheckedAt.Value.ToLocalTime().ToString("HH:mm:ss")
+            </strong>
+        </span>
     </div>
 }
 
 @code {
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
     private bool _isLoading = true;
     private bool _isApiHealthy;
+    private DateTimeOffset? _lastCheckedAt;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        _isApiHealthy = await ApiHealthService.IsHealthyAsync();
-        _isLoading = false;
+        return CheckApiAsync();
+    }
+
+    private async Task CheckApiAsync()
+    {
+        _isLoading = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            _isApiHealthy = await ApiHealthService.IsHealthyAsync(
+                _cancellationTokenSource.Token);
+
+            _lastCheckedAt = DateTimeOffset.Now;
+        }
+        catch (OperationCanceledException)
+            when (_cancellationTokenSource.IsCancellationRequested)
+        {
+            // Navigation or component disposal canceled the request.
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
     }
 }

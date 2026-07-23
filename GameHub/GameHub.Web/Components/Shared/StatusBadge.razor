@@ -1,0 +1,26 @@
+﻿<span class="status-badge @ToneClass"
+      role="status">
+
+    @if (ShowIndicator)
+    {
+        <span class="status-indicator" aria-hidden="true"></span>
+    }
+
+    <span class="status-content">
+        @ChildContent
+    </span>
+</span>
+
+@code {
+    [Parameter]
+    public StatusTone Tone { get; set; } = StatusTone.Neutral;
+
+    [Parameter]
+    public bool ShowIndicator { get; set; } = true;
+
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string ToneClass =>
+        $"tone-{Tone.ToString().ToLowerInvariant()}";
+}

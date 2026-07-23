@@ -1,0 +1,55 @@
+.status-badge {
+    display: inline-flex;
+    min-height: 1.85rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.7rem;
+    color: var(--gh-text-secondary);
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--gh-border-subtle);
+    border-radius: var(--gh-radius-pill);
+    font-size: 0.7rem;
+    font-weight: 650;
+    line-height: 1;
+}
+
+.status-indicator {
+    width: 0.42rem;
+    height: 0.42rem;
+    flex: 0 0 auto;
+    background-color: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 9px currentColor;
+}
+
+.tone-neutral {
+    color: var(--gh-text-secondary);
+}
+
+.tone-info {
+    color: var(--gh-color-info);
+    background-color: rgba(53, 210, 255, 0.07);
+    border-color: rgba(53, 210, 255, 0.2);
+}
+
+.tone-success {
+    color: var(--gh-color-success);
+    background-color: rgba(61, 220, 151, 0.07);
+    border-color: rgba(61, 220, 151, 0.2);
+}
+
+.tone-warning {
+    color: var(--gh-color-warning);
+    background-color: rgba(255, 191, 91, 0.07);
+    border-color: rgba(255, 191, 91, 0.2);
+}
+
+.tone-danger {
+    color: var(--gh-color-danger);
+    background-color: rgba(255, 100, 124, 0.07);
+    border-color: rgba(255, 100, 124, 0.2);
+}
+
+.status-content {
+    color: currentColor;
+}

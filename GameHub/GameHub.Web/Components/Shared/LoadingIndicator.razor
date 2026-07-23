@@ -1,0 +1,26 @@
+﻿<div class="loading-indicator"
+     role="status"
+     aria-live="polite"
+     aria-label="@Message">
+
+    <div class="loading-orbit" aria-hidden="true">
+        <span></span>
+    </div>
+
+    <div class="loading-content">
+        <strong>@Message</strong>
+
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+            <small>@Description</small>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Loading...";
+
+    [Parameter]
+    public string? Description { get; set; }
+}
