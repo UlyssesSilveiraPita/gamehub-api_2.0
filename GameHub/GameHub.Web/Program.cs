@@ -1,11 +1,17 @@
 using GameHub.Web.Components;
 using GameHub.Web.Contracts.Common;
 using GameHub.Web.Options;
-using Microsoft.Extensions.Options;
 using GameHub.Web.Services.Abstractions;
 using GameHub.Web.Services.Api;
+using GameHub.Web.State;
+using GameHub.Web.Services.Authentication;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<UserSession>();
+builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
 
 builder.Services
     .AddOptions<ApiOptions>()
@@ -22,6 +28,7 @@ builder.Services.AddScoped<IApiHealthService, ApiHealthService>();
 
 builder.Services.AddHttpClient<IApiClient, ApiClient>(
     ConfigureApiHttpClient);
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

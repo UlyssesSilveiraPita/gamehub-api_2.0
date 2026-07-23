@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using GameHub.Web.Services.Api;
 using GameHub.Web.Tests.Helpers;
+using GameHub.Web.Contracts.Auth;
+using GameHub.Web.State;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GameHub.Web.Tests.Unit.Services;
@@ -275,6 +277,71 @@ public class ApiClientTests
             "The GameHub service is currently unavailable.");
     }
 
+    [Fact]
+    public async Task GetAsync_ShouldAttachBearerToken_WhenSessionIsAuthenticated()
+    {
+        string? capturedScheme = null;
+        string? capturedToken = null;
+
+        var handler = new StubHttpMessageHandler(
+            (request, _) =>
+            {
+                capturedScheme =
+                    request.Headers.Authorization?.Scheme;
+
+                capturedToken =
+                    request.Headers.Authorization?.Parameter;
+
+                var response = new HttpResponseMessage(
+                    HttpStatusCode.OK)
+                {
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            id = 1,
+                            name = "GameHub"
+                        })
+                };
+
+                return Task.FromResult(response);
+            });
+
+        var session = new UserSession(TimeProvider.System);
+
+        session.Start(
+            new LoginResponse
+            {
+                Token = "test-jwt-token",
+                ExpiresAt = DateTime.UtcNow.AddHours(1),
+                User = new AuthenticatedUser
+                {
+                    Id = "user-1",
+                    UserName = "admin@gamehub.com",
+                    Roles = new[]
+                    {
+                    "Admin"
+                    }
+                }
+            });
+
+        var httpClient = new HttpClient(handler)
+        {
+            BaseAddress = new Uri("https://localhost/")
+        };
+
+        var apiClient = new ApiClient(
+            httpClient,
+            NullLogger<ApiClient>.Instance,
+            session);
+
+        var result = await apiClient.GetAsync<TestResponse>(
+            "api/Auth/Me");
+
+        result.IsSuccess.Should().BeTrue();
+        capturedScheme.Should().Be("Bearer");
+        capturedToken.Should().Be("test-jwt-token");
+    }
+
     private static ApiClient CreateApiClient(
         HttpMessageHandler handler)
     {
@@ -285,7 +352,8 @@ public class ApiClientTests
 
         return new ApiClient(
             httpClient,
-            NullLogger<ApiClient>.Instance);
+            NullLogger<ApiClient>.Instance,
+            new UserSession(TimeProvider.System));
     }
 
     private sealed class TestResponse
@@ -295,15 +363,5 @@ public class ApiClientTests
         public string Name { get; init; } = string.Empty;
     }
 
-    private sealed class LoginRequest
-    {
-        public string Username { get; init; } = string.Empty;
-
-        public string Password { get; init; } = string.Empty;
-    }
-
-    private sealed class LoginResponse
-    {
-        public string Token { get; init; } = string.Empty;
-    }
+   
 }

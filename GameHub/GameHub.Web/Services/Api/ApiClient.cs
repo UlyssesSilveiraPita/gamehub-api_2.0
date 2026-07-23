@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
 using System.Text.Json;
+using GameHub.Web.State;
 using GameHub.Web.Contracts.Common;
 using GameHub.Web.Services.Abstractions;
 
@@ -11,15 +13,18 @@ public sealed class ApiClient : IApiClient
     private static readonly JsonSerializerOptions JsonOptions =
         new(JsonSerializerDefaults.Web);
 
+    private readonly UserSession _userSession;
     private readonly HttpClient _httpClient;
     private readonly ILogger<ApiClient> _logger;
 
     public ApiClient(
         HttpClient httpClient,
-        ILogger<ApiClient> logger)
+        ILogger<ApiClient> logger,
+        UserSession userSession)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _userSession = userSession;
     }
 
     public Task<ApiResult<TResponse>> GetAsync<TResponse>(
@@ -62,6 +67,18 @@ public sealed class ApiClient : IApiClient
         {
             try
             {
+                var accessToken =
+                    _userSession.GetValidAccessToken();
+
+                if (!string.IsNullOrWhiteSpace(accessToken)
+                    && request.Headers.Authorization is null)
+                {
+                    request.Headers.Authorization =
+                        new AuthenticationHeaderValue(
+                            "Bearer",
+                            accessToken);
+                }
+
                 using var response = await _httpClient.SendAsync(
                     request,
                     HttpCompletionOption.ResponseHeadersRead,
