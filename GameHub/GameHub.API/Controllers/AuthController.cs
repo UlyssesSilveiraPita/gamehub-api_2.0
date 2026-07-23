@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using GameHub.API.Dtos.Auth;
 using GameHub.API.Entities;
+using GameHub.API.Dtos.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -59,40 +60,65 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult> Login(LoginDto dto)
+    [ProducesResponseType<LoginResponseDto>(
+       StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiErrorResponse>(
+       StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<LoginResponseDto>> Login(
+       LoginDto dto)
     {
-        var user = await _userManager.FindByNameAsync(dto.Username); // busca usuario
+        var user = await _userManager.FindByNameAsync(
+            dto.Username);
 
         if (user is null)
         {
-            return Unauthorized("Usuario ou senha Invalidos");
+            return Unauthorized(
+                new ApiErrorResponse
+                {
+                    Code = "auth.invalid_credentials",
+                    Message = "Invalid username or password."
+                });
         }
 
-        //compara senhas digitada com banco de dados
-        var result = await _signInManager.CheckPasswordSignInAsync(
-            user,
-            dto.Password,
-            false);
+        var signInResult =
+            await _signInManager.CheckPasswordSignInAsync(
+                user,
+                dto.Password,
+                false);
 
-        if(!result.Succeeded)
+        if (!signInResult.Succeeded)
         {
-            return Unauthorized("Usuario ou se");
+            return Unauthorized(
+                new ApiErrorResponse
+                {
+                    Code = "auth.invalid_credentials",
+                    Message = "Invalid username or password."
+                });
         }
 
-        //return Ok("Login realizado com sucesso");
+        var roles = await _userManager.GetRolesAsync(user);
+        var expiresAt = DateTime.UtcNow.AddHours(2);
 
-        //===================================
-        // Bloco para retorno de token JWT \\
-        //===================================
+        var claims = new List<Claim>
+    {
+        new(
+            ClaimTypes.NameIdentifier,
+            user.Id),
 
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName!)
-        };
+        new(
+            ClaimTypes.Name,
+            user.UserName!)
+    };
+
+        claims.AddRange(
+            roles.Select(
+                role => new Claim(
+                    ClaimTypes.Role,
+                    role)));
 
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            Encoding.UTF8.GetBytes(
+                _configuration["Jwt:Key"]!));
 
         var credentials = new SigningCredentials(
             key,
@@ -102,18 +128,27 @@ public class AuthController : ControllerBase
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(2),
+            expires: expiresAt,
             signingCredentials: credentials);
 
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        var tokenString =
+            new JwtSecurityTokenHandler().WriteToken(token);
 
-        return Ok(new
-        {
-            token = tokenString
-        });
-
+        return Ok(
+            new LoginResponseDto
+            {
+                Token = tokenString,
+                ExpiresAt = expiresAt,
+                User = new AuthenticatedUserResponseDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName!,
+                    Email = user.Email,
+                    Roles = roles.ToArray()
+                }
+            });
     }
-    
+
     [Authorize]
     [HttpGet("Me")]
     public ActionResult Me()
