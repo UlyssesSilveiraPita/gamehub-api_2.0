@@ -1,4 +1,5 @@
 using GameHub.Web.Components;
+using GameHub.Web.Contracts.Common;
 using GameHub.Web.Options;
 using Microsoft.Extensions.Options;
 using GameHub.Web.Services.Abstractions;
@@ -17,16 +18,10 @@ builder.Services
         "A valid absolute API BaseUrl must be configured.");
 //.ValidateOnStart();
 
-builder.Services.AddHttpClient<IApiHealthService, ApiHealthService>(
-    (serviceProvider, httpClient) =>
-    {
-        var apiOptions = serviceProvider
-            .GetRequiredService<IOptions<ApiOptions>>()
-            .Value;
+builder.Services.AddScoped<IApiHealthService, ApiHealthService>();
 
-        httpClient.BaseAddress = new Uri(apiOptions.BaseUrl);
-        httpClient.Timeout = TimeSpan.FromSeconds(30);
-    });
+builder.Services.AddHttpClient<IApiClient, ApiClient>(
+    ConfigureApiHttpClient);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -51,3 +46,15 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+static void ConfigureApiHttpClient(
+    IServiceProvider serviceProvider,
+    HttpClient httpClient)
+{
+    var apiOptions = serviceProvider
+        .GetRequiredService<IOptions<ApiOptions>>()
+        .Value;
+
+    httpClient.BaseAddress = new Uri(apiOptions.BaseUrl);
+    httpClient.Timeout = TimeSpan.FromSeconds(30);
+}
