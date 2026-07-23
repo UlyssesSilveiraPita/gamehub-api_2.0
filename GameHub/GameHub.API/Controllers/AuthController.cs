@@ -151,13 +151,47 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpGet("Me")]
-    public ActionResult Me()
+    [ProducesResponseType<AuthenticatedUserResponseDto>(
+    StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiErrorResponse>(
+    StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<AuthenticatedUserResponseDto>> Me()
     {
-        return Ok(new
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(userId))
         {
-            UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            UserName = User.Identity?.Name
-        });
+            return Unauthorized(
+                new ApiErrorResponse
+                {
+                    Code = "auth.invalid_session",
+                    Message = "The authenticated session is invalid."
+                });
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user is null)
+        {
+            return Unauthorized(
+                new ApiErrorResponse
+                {
+                    Code = "auth.invalid_session",
+                    Message = "The authenticated session is invalid."
+                });
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Ok(
+            new AuthenticatedUserResponseDto
+            {
+                Id = user.Id,
+                UserName = user.UserName!,
+                Email = user.Email,
+                Roles = roles.ToArray()
+            });
     }
 
 }

@@ -9,12 +9,15 @@ public class DatabaseSeeder
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly GameHubDbContext _context;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
     public DatabaseSeeder(
         UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         GameHubDbContext context)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
         _context = context;
     }
 
@@ -22,6 +25,25 @@ public class DatabaseSeeder
     {
         const string adminEmail = "admin@gamehub.com";
         const string adminPassword = "GameHub@123";
+
+        const string adminRole = "Admin";
+
+        if (!await _roleManager.RoleExistsAsync(adminRole))
+        {
+            var roleResult = await _roleManager.CreateAsync(
+                new IdentityRole(adminRole));
+
+            if (!roleResult.Succeeded)
+            {
+                var errors = string.Join(
+                    ", ",
+                    roleResult.Errors.Select(
+                        error => error.Description));
+
+                throw new InvalidOperationException(
+                    $"Error creating admin role: {errors}");
+            }
+        }
 
         var adminUser = await _userManager.FindByEmailAsync(adminEmail);
 
@@ -42,7 +64,29 @@ public class DatabaseSeeder
             {
                 var errors = string.Join(", ", result.Errors.Select(error => error.Description));
 
-                throw new Exception($"Error creating admin user: {errors}");
+                    throw new InvalidOperationException(
+                        $"Error creating admin user: {errors}");
+            }
+        }
+
+        if (!await _userManager.IsInRoleAsync(
+            adminUser,
+            adminRole))
+        {
+            var roleAssignmentResult =
+                await _userManager.AddToRoleAsync(
+                    adminUser,
+                    adminRole);
+
+            if (!roleAssignmentResult.Succeeded)
+            {
+                var errors = string.Join(
+                    ", ",
+                    roleAssignmentResult.Errors.Select(
+                        error => error.Description));
+
+                throw new InvalidOperationException(
+                    $"Error assigning admin role: {errors}");
             }
         }
 
