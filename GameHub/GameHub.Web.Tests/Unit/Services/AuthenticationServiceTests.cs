@@ -32,9 +32,12 @@ public class AuthenticationServiceTests
 
         var session = CreateSession();
 
+        var storage = new StubUserSessionStorage();
+
         var service = new AuthenticationService(
             apiClient,
             session,
+            storage,
             NullLogger<AuthenticationService>.Instance);
 
         var result = await service.LoginAsync(
@@ -48,6 +51,9 @@ public class AuthenticationServiceTests
         session.IsAuthenticated.Should().BeTrue();
         session.AccessToken.Should().Be("jwt-token");
         session.User!.IsInRole("Admin").Should().BeTrue();
+
+        storage.StoredSession.Should().BeSameAs(
+            loginResponse);
     }
 
     [Fact]
@@ -70,6 +76,7 @@ public class AuthenticationServiceTests
         var service = new AuthenticationService(
             apiClient,
             session,
+            new StubUserSessionStorage(),
             NullLogger<AuthenticationService>.Instance);
 
         var result = await service.LoginAsync(
@@ -105,6 +112,7 @@ public class AuthenticationServiceTests
         var service = new AuthenticationService(
             apiClient,
             session,
+            new StubUserSessionStorage(),
             NullLogger<AuthenticationService>.Instance);
 
         var result = await service.LoginAsync(
@@ -119,22 +127,151 @@ public class AuthenticationServiceTests
     }
 
     [Fact]
-    public void Logout_ShouldClearAuthenticatedSession()
+    public async Task Logout_ShouldClearAuthenticatedSession()
     {
+        var loginResponse = CreateLoginResponse();
+
         var session = CreateSession();
-        session.Start(CreateLoginResponse());
+        session.Start(loginResponse);
+
+        var storage = new StubUserSessionStorage(
+            loginResponse);
 
         var service = new AuthenticationService(
             new StubApiClient(),
             session,
+            storage,
             NullLogger<AuthenticationService>.Instance);
 
-        service.Logout();
+        await service.LogoutAsync();
 
         session.IsAuthenticated.Should().BeFalse();
         session.AccessToken.Should().BeNull();
+        session.ExpiresAt.Should().BeNull();
         session.User.Should().BeNull();
-                
+        storage.StoredSession.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task RestoreSessionAsync_ShouldRestoreValidSession()
+    {
+        var loginResponse = CreateLoginResponse();
+
+        var storage = new StubUserSessionStorage(
+            loginResponse);
+
+        var session = CreateSession();
+
+        var service = new AuthenticationService(
+            new StubApiClient(),
+            session,
+            storage,
+            NullLogger<AuthenticationService>.Instance);
+
+        var restored =
+            await service.RestoreSessionAsync();
+
+        restored.Should().BeTrue();
+        session.IsAuthenticated.Should().BeTrue();
+        session.AccessToken.Should().Be("jwt-token");
+        session.User.Should().NotBeNull();
+        session.User!.IsInRole("Admin").Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RestoreSessionAsync_ShouldRejectExpiredSession()
+    {
+        var expiredResponse = new LoginResponse
+        {
+            Token = "expired-token",
+            ExpiresAt = Now.AddMinutes(-1).UtcDateTime,
+            User = new AuthenticatedUser
+            {
+                Id = "admin-1",
+                UserName = "admin@gamehub.com",
+                Roles = new[]
+                {
+                    "Admin"
+                }
+            }
+        };
+
+        var storage = new StubUserSessionStorage(
+            expiredResponse);
+
+        var session = CreateSession();
+
+        var service = new AuthenticationService(
+            new StubApiClient(),
+            session,
+            storage,
+            NullLogger<AuthenticationService>.Instance);
+
+        var restored =
+            await service.RestoreSessionAsync();
+
+        restored.Should().BeFalse();
+        session.IsAuthenticated.Should().BeFalse();
+        session.AccessToken.Should().BeNull();
+        session.User.Should().BeNull();
+        storage.StoredSession.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task RestoreSessionAsync_ShouldLoadStoredSessionOnlyOnce()
+    {
+        var storage = new StubUserSessionStorage(
+            CreateLoginResponse());
+
+        var session = CreateSession();
+
+        var service = new AuthenticationService(
+            new StubApiClient(),
+            session,
+            storage,
+            NullLogger<AuthenticationService>.Instance);
+
+        var firstRestore =
+            await service.RestoreSessionAsync();
+
+        var secondRestore =
+            await service.RestoreSessionAsync();
+
+        firstRestore.Should().BeTrue();
+        secondRestore.Should().BeTrue();
+        storage.LoadCallCount.Should().Be(1);
+        session.IsAuthenticated.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RestoreSessionAsync_ShouldClearStorage_WhenStoredSessionCannotBeRead()
+    {
+        var storage = new StubUserSessionStorage(
+            CreateLoginResponse())
+        {
+            LoadException = new InvalidOperationException(
+                "Corrupted stored session.")
+        };
+
+        var session = CreateSession();
+
+        var service = new AuthenticationService(
+            new StubApiClient(),
+            session,
+            storage,
+            NullLogger<AuthenticationService>.Instance);
+
+        var restored =
+            await service.RestoreSessionAsync();
+
+        restored.Should().BeFalse();
+        session.IsAuthenticated.Should().BeFalse();
+        session.AccessToken.Should().BeNull();
+        session.User.Should().BeNull();
+
+        storage.LoadCallCount.Should().Be(1);
+        storage.ClearCallCount.Should().Be(1);
+        storage.StoredSession.Should().BeNull();
     }
 
     private static UserSession CreateSession()

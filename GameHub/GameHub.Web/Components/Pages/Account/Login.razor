@@ -1,0 +1,199 @@
+﻿@page "/login"
+@implements IDisposable
+
+@using GameHub.Web.Components.Pages.Account.Models
+@using GameHub.Web.Contracts.Auth
+@using GameHub.Web.Services.Abstractions
+@using GameHub.Web.State
+
+@inject IAuthenticationService AuthenticationService
+@inject UserSession UserSession
+@inject NavigationManager Navigation
+
+<PageTitle>Sign In | GameHub</PageTitle>
+
+<section class="login-page">
+    <div class="login-introduction">
+        <span class="login-eyebrow">
+            Calisto Interactive Account
+        </span>
+
+        <h1>
+            Welcome back to
+            <span>GameHub.</span>
+        </h1>
+
+        <p>
+            Access your players, progression, achievements,
+            purchases and connected Calisto Interactive worlds.
+        </p>
+
+        <div class="security-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.6 2.9 8.8 7 10 4.1-1.2 7-5.4 7-10V6l-7-3Z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+            </svg>
+
+            <span>
+                Authentication protected by the GameHub API
+            </span>
+        </div>
+    </div>
+
+    <div class="login-card">
+        <div class="login-card-header">
+            <span>Account access</span>
+            <h2>Sign in</h2>
+
+            <p>
+                Enter your GameHub credentials to continue.
+            </p>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="login-error"
+                 role="alert"
+                 aria-live="assertive">
+
+                <span aria-hidden="true">!</span>
+                @_errorMessage
+            </div>
+        }
+
+        <EditForm Model="_model"
+                  FormName="login"
+                  OnValidSubmit="HandleLoginAsync">
+
+            <DataAnnotationsValidator />
+
+            <div class="form-field">
+                <label for="username">Username</label>
+
+                <InputText id="username"
+                           class="form-control"
+                           @bind-Value="_model.Username"
+                           autocomplete="username"
+                           disabled="@_isSubmitting" />
+
+                <ValidationMessage For="() => _model.Username" />
+            </div>
+
+            <div class="form-field">
+                <div class="field-label-row">
+                    <label for="password">Password</label>
+                </div>
+
+                <InputText id="password"
+                           type="password"
+                           class="form-control"
+                           @bind-Value="_model.Password"
+                           autocomplete="current-password"
+                           disabled="@_isSubmitting" />
+
+                <ValidationMessage For="() => _model.Password" />
+            </div>
+
+            <button class="btn btn-primary login-submit"
+                    type="submit"
+                    disabled="@_isSubmitting">
+
+                @if (_isSubmitting)
+                {
+                    <span class="button-spinner"
+                          aria-hidden="true"></span>
+
+                    <span>Signing in...</span>
+                }
+                else
+                {
+                    <span>Sign in to GameHub</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="login-card-footer">
+            <span>GameHub Platform</span>
+            <span>•</span>
+            <span>Calisto Interactive</span>
+        </div>
+    </div>
+</section>
+
+@code {
+    private readonly LoginFormModel _model = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        if (UserSession.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(
+    bool firstRender)
+    {
+        if (!firstRender || UserSession.IsAuthenticated)
+        {
+            return;
+        }
+
+        var sessionRestored =
+            await AuthenticationService.RestoreSessionAsync();
+
+        if (sessionRestored && UserSession.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private async Task HandleLoginAsync()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        try
+        {
+            var result = await AuthenticationService.LoginAsync(
+                new LoginRequest
+                {
+                    Username = _model.Username.Trim(),
+                    Password = _model.Password
+                },
+                _cancellationTokenSource.Token);
+
+            if (result.IsSuccess)
+            {
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            _errorMessage =
+                result.Error?.ValidationErrors.FirstOrDefault()
+                ?? result.Error?.Message
+                ?? "Unable to sign in.";
+
+            _model.Password = string.Empty;
+        }
+        catch (OperationCanceledException)
+            when (_cancellationTokenSource.IsCancellationRequested)
+        {
+            // Navigation canceled the login request.
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+    }
+}

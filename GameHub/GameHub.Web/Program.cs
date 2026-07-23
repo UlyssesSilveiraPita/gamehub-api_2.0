@@ -1,8 +1,8 @@
 using GameHub.Web.Components;
-using GameHub.Web.Contracts.Common;
 using GameHub.Web.Options;
 using GameHub.Web.Services.Abstractions;
 using GameHub.Web.Services.Api;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using GameHub.Web.State;
 using GameHub.Web.Services.Authentication;
 using Microsoft.Extensions.Options;
@@ -11,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<UserSession>();
-builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
+
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<IUserSessionStorage, ProtectedUserSessionStorage>();
 
 builder.Services
     .AddOptions<ApiOptions>()
@@ -22,7 +25,6 @@ builder.Services
             UriKind.Absolute,
             out _),
         "A valid absolute API BaseUrl must be configured.");
-//.ValidateOnStart();
 
 builder.Services.AddScoped<IApiHealthService, ApiHealthService>();
 

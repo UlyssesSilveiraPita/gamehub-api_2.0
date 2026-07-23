@@ -9,5 +9,7 @@ public interface IAuthenticationService
         LoginRequest request,
         CancellationToken cancellationToken = default);
 
-    void Logout();
+    Task<bool> RestoreSessionAsync();
+
+    Task LogoutAsync();
 }

@@ -34,9 +34,27 @@ public sealed class UserSession
                 nameof(response));
         }
 
-        AccessToken = response.Token;
-        ExpiresAt = new DateTimeOffset(
+        if (response.User is null
+            || string.IsNullOrWhiteSpace(response.User.Id)
+            || string.IsNullOrWhiteSpace(response.User.UserName))
+        {
+            throw new ArgumentException(
+                "A valid authenticated user is required.",
+                nameof(response));
+        }
+
+        var expiresAt = new DateTimeOffset(
             response.ExpiresAt.ToUniversalTime());
+
+        if (expiresAt <= _timeProvider.GetUtcNow())
+        {
+            throw new ArgumentException(
+                "The authenticated session has already expired.",
+                nameof(response));
+        }
+
+        AccessToken = response.Token;
+        ExpiresAt = expiresAt;
         User = response.User;
     }
 

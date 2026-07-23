@@ -1,5 +1,12 @@
 ﻿@inherits LayoutComponentBase
 
+@using GameHub.Web.Services.Abstractions
+@using GameHub.Web.State
+
+@inject IAuthenticationService AuthenticationService
+@inject UserSession UserSession
+@inject NavigationManager Navigation
+
 <div class="app-page">
     <aside class="sidebar">
         <NavMenu />
@@ -24,6 +31,58 @@
 
                     Frontend Preview
                 </span>
+
+                <span class="header-divider" aria-hidden="true"></span>
+
+                @if (!_sessionRestored)
+                {
+                    <span class="session-restoring"
+                          role="status"
+                          aria-label="Restoring user session">
+                        <span aria-hidden="true"></span>
+                    </span>
+                }
+                else if (UserSession.IsAuthenticated
+                    && UserSession.User is { } currentUser)
+                {
+                    <div class="user-summary">
+                        <span class="user-avatar" aria-hidden="true">
+                            @UserInitial
+                        </span>
+
+                        <span class="user-copy">
+                            <strong>@currentUser.UserName</strong>
+
+                            @if (currentUser.IsInRole("Admin"))
+                            {
+                                <small>Administrator</small>
+                            }
+                            else
+                            {
+                                <small>Player account</small>
+                            }
+                        </span>
+                    </div>
+
+                    <button class="logout-button"
+                            type="button"
+                            title="Sign out"
+                            aria-label="Sign out"
+                            @onclick="HandleLogout">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M10 5H5v14h5"></path>
+                            <path d="M14 8l4 4-4 4"></path>
+                            <path d="M18 12H9"></path>
+                        </svg>
+                    </button>
+                }
+                else
+                {
+                    <a class="sign-in-link" href="login">
+                        Sign in
+                    </a>
+                }
             </div>
         </header>
 
@@ -54,3 +113,40 @@
         ×
     </button>
 </div>
+
+@code {
+    private string UserInitial
+    {
+        get
+        {
+            var userName = UserSession.User?.UserName;
+
+            return string.IsNullOrWhiteSpace(userName)
+                ? "U"
+                : userName[..1].ToUpperInvariant();
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthenticationService.LogoutAsync();
+        Navigation.NavigateTo("/");
+    }
+
+    private bool _sessionRestored;
+
+    protected override async Task OnAfterRenderAsync(
+        bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await AuthenticationService.RestoreSessionAsync();
+
+        _sessionRestored = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
