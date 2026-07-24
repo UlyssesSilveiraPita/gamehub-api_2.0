@@ -5,12 +5,31 @@ using GameHub.Web.Services.Api;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using GameHub.Web.State;
 using GameHub.Web.Services.Authentication;
+using GameHub.Web.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<UserSession>();
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy(
+        AuthorizationPolicies.AdminOnly,
+        policy => policy.RequireRole(
+            GameHubRoles.Admin));
+});
+
+builder.Services.AddCascadingAuthenticationState();
+
+builder.Services
+    .AddScoped<GameHubAuthenticationStateProvider>();
+
+builder.Services.AddScoped<AuthenticationStateProvider>(
+    serviceProvider => serviceProvider
+        .GetRequiredService<GameHubAuthenticationStateProvider>());
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ProtectedSessionStorage>();
@@ -27,22 +46,16 @@ builder.Services
         "A valid absolute API BaseUrl must be configured.");
 
 builder.Services.AddScoped<IApiHealthService, ApiHealthService>();
-
 builder.Services.AddHttpClient<IApiClient, ApiClient>(
     ConfigureApiHttpClient);
-
-
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -52,7 +65,8 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AllowAnonymous();
 
 app.Run();
 

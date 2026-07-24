@@ -1,0 +1,44 @@
+.admin-foundation {
+    position: relative;
+    overflow: hidden;
+    margin-top: 2rem;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    background: radial-gradient( circle at 100% 0%, rgba(255, 184, 77, 0.11), transparent 24rem ), var(--gh-bg-surface);
+    border: 1px solid rgba(255, 184, 77, 0.2);
+    border-radius: var(--gh-radius-lg);
+    box-shadow: var(--gh-shadow-md);
+}
+
+    .admin-foundation::after {
+        position: absolute;
+        top: -4rem;
+        right: -4rem;
+        width: 12rem;
+        height: 12rem;
+        content: "";
+        border: 1px solid rgba(255, 184, 77, 0.12);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: rotate(18deg);
+    }
+
+    .admin-foundation h2 {
+        max-width: 42rem;
+        margin: 1.5rem 0 0;
+        color: var(--gh-text-primary);
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+    }
+
+    .admin-foundation p {
+        max-width: 46rem;
+        margin: 0.85rem 0 0;
+        color: var(--gh-text-secondary);
+        line-height: 1.75;
+    }
+
+@media (max-width: 640.98px) {
+    .admin-foundation {
+        margin-top: 1.5rem;
+        padding: 1.5rem 1.25rem;
+    }
+}

@@ -23,6 +23,8 @@ public sealed class UserSession
         && ExpiresAt is not null
         && ExpiresAt > _timeProvider.GetUtcNow();
 
+    public event Action? SessionChanged;
+
     public void Start(LoginResponse response)
     {
         ArgumentNullException.ThrowIfNull(response);
@@ -56,6 +58,8 @@ public sealed class UserSession
         AccessToken = response.Token;
         ExpiresAt = expiresAt;
         User = response.User;
+
+        SessionChanged?.Invoke();
     }
 
     public string? GetValidAccessToken()
@@ -72,8 +76,18 @@ public sealed class UserSession
 
     public void Clear()
     {
+        var hadSession =
+            AccessToken is not null
+            || ExpiresAt is not null
+            || User is not null;
+
         AccessToken = null;
         ExpiresAt = null;
         User = null;
+
+        if (hadSession)
+        {
+            SessionChanged?.Invoke();
+        }
     }
 }

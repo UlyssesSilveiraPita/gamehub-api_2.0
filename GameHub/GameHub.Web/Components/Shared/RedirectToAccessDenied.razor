@@ -1,0 +1,13 @@
+﻿@inject NavigationManager Navigation
+
+<span role="status">
+    Redirecting to access denied...
+</span>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo(
+            "/access-denied");
+    }
+}

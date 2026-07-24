@@ -1,0 +1,21 @@
+﻿@page "/dashboard"
+@attribute [Authorize]
+
+<PageTitle>Dashboard | GameHub</PageTitle>
+
+<PageHeader Eyebrow="Player Workspace"
+            Title="Dashboard"
+            Description="Your authenticated GameHub experience starts here." />
+
+<section class="dashboard-foundation">
+    <StatusBadge Tone="StatusTone.Success">
+        Authenticated session
+    </StatusBadge>
+
+    <h2>Welcome to your GameHub dashboard</h2>
+
+    <p>
+        Player profiles, progression, purchases and connected
+        Calisto Interactive experiences will be available here.
+    </p>
+</section>

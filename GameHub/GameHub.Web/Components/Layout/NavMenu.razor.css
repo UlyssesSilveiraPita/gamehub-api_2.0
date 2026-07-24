@@ -116,6 +116,10 @@
     text-transform: uppercase;
 }
 
+.nav-section-spaced {
+    margin-top: 1.5rem;
+}
+
 .nav-item {
     margin-bottom: 0.35rem;
 }
@@ -274,5 +278,9 @@
     .nav-footer {
         margin-top: 1rem;
         margin-bottom: 0.75rem;
+    }
+
+    .nav-section-spaced {
+        margin-top: 1rem;
     }
 }

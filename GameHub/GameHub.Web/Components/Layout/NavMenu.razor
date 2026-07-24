@@ -48,6 +48,49 @@
                     <span>System Status</span>
                 </NavLink>
             </div>
+
+            <AuthorizeView Context="authenticatedContext">
+                <Authorized>
+                    <p class="nav-section-label nav-section-spaced">
+                        Account
+                    </p>
+
+                    <div class="nav-item">
+                        <NavLink class="nav-link"
+                                 href="dashboard">
+                            <svg class="nav-icon"
+                                 viewBox="0 0 24 24"
+                                 aria-hidden="true">
+                                <path d="M4 13h6V4H4v9Z" />
+                                <path d="M14 20h6V11h-6v9Z" />
+                                <path d="M4 20h6v-3H4v3Z" />
+                                <path d="M14 7h6V4h-6v3Z" />
+                            </svg>
+
+                            <span>Dashboard</span>
+                        </NavLink>
+                    </div>
+
+                    <AuthorizeView Policy="@AuthorizationPolicies.AdminOnly"
+                                   Context="administratorContext">
+                        <Authorized>
+                            <div class="nav-item">
+                                <NavLink class="nav-link"
+                                         href="admin">
+                                    <svg class="nav-icon"
+                                         viewBox="0 0 24 24"
+                                         aria-hidden="true">
+                                        <path d="M12 3 5 6v5c0 4.6 2.9 8.8 7 10 4.1-1.2 7-5.4 7-10V6l-7-3Z" />
+                                        <path d="m9 12 2 2 4-4" />
+                                    </svg>
+
+                                    <span>Administration</span>
+                                </NavLink>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <div class="nav-footer">

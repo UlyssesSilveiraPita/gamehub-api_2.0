@@ -19,7 +19,7 @@ public sealed class ProtectedUserSessionStorage
     }
 
     public async Task SaveAsync(
-    LoginResponse response)
+        LoginResponse response)
     {
         ArgumentNullException.ThrowIfNull(response);
 

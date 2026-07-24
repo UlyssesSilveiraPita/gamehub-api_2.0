@@ -34,15 +34,7 @@
 
                 <span class="header-divider" aria-hidden="true"></span>
 
-                @if (!_sessionRestored)
-                {
-                    <span class="session-restoring"
-                          role="status"
-                          aria-label="Restoring user session">
-                        <span aria-hidden="true"></span>
-                    </span>
-                }
-                else if (UserSession.IsAuthenticated
+                @if (UserSession.IsAuthenticated
                     && UserSession.User is { } currentUser)
                 {
                     <div class="user-summary">
@@ -131,22 +123,5 @@
     {
         await AuthenticationService.LogoutAsync();
         Navigation.NavigateTo("/");
-    }
-
-    private bool _sessionRestored;
-
-    protected override async Task OnAfterRenderAsync(
-        bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        await AuthenticationService.RestoreSessionAsync();
-
-        _sessionRestored = true;
-
-        await InvokeAsync(StateHasChanged);
     }
 }

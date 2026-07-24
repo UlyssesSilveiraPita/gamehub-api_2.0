@@ -1,0 +1,22 @@
+﻿@page "/admin"
+@attribute [Authorize(
+    Policy = AuthorizationPolicies.AdminOnly)]
+
+<PageTitle>Administration | GameHub</PageTitle>
+
+<PageHeader Eyebrow="Calisto Operations"
+            Title="Administration"
+            Description="Restricted GameHub operational workspace for authorized administrators." />
+
+<section class="admin-foundation">
+<StatusBadge Tone="StatusTone.Warning">
+    Administrator access
+        </StatusBadge>
+
+    <h2>GameHub administration</h2>
+
+    <p>
+    Product management, payment monitoring and platform
+        operations will be available from this restricted area.
+        </p>
+    </section>

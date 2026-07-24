@@ -121,6 +121,8 @@
 </section>
 
 @code {
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
     private readonly LoginFormModel _model = new();
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -131,24 +133,8 @@
     {
         if (UserSession.IsAuthenticated)
         {
-            Navigation.NavigateTo("/");
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(
-    bool firstRender)
-    {
-        if (!firstRender || UserSession.IsAuthenticated)
-        {
-            return;
-        }
-
-        var sessionRestored =
-            await AuthenticationService.RestoreSessionAsync();
-
-        if (sessionRestored && UserSession.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo(
+                GetSafeReturnUrl());
         }
     }
 
@@ -169,7 +155,8 @@
 
             if (result.IsSuccess)
             {
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo(
+                    GetSafeReturnUrl());
                 return;
             }
 
@@ -188,6 +175,45 @@
         finally
         {
             _isSubmitting = false;
+        }
+    }
+
+    private string GetSafeReturnUrl()
+    {
+        if (string.IsNullOrWhiteSpace(ReturnUrl))
+        {
+            return "/";
+        }
+
+        try
+        {
+            var baseUri = new Uri(
+                Navigation.BaseUri);
+
+            var targetUri = Navigation.ToAbsoluteUri(
+                ReturnUrl);
+
+            var hasSameOrigin =
+                string.Equals(
+                    baseUri.Scheme,
+                    targetUri.Scheme,
+                    StringComparison.OrdinalIgnoreCase)
+                && string.Equals(
+                    baseUri.Authority,
+                    targetUri.Authority,
+                    StringComparison.OrdinalIgnoreCase);
+
+            if (!hasSameOrigin)
+            {
+                return "/";
+            }
+
+            return targetUri.PathAndQuery
+                + targetUri.Fragment;
+        }
+        catch (UriFormatException)
+        {
+            return "/";
         }
     }
 

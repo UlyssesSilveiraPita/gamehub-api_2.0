@@ -1,0 +1,25 @@
+﻿@inject NavigationManager Navigation
+
+<span role="status">
+    Redirecting to sign in...
+</span>
+
+@code {
+    protected override void OnInitialized()
+    {
+        var relativePath =
+            Navigation.ToBaseRelativePath(
+                Navigation.Uri);
+
+        var returnUrl =
+            string.IsNullOrWhiteSpace(relativePath)
+                ? "/"
+                : $"/{relativePath}";
+
+        var encodedReturnUrl =
+            Uri.EscapeDataString(returnUrl);
+
+        Navigation.NavigateTo(
+            $"/login?returnUrl={encodedReturnUrl}");
+    }
+}

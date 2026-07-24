@@ -138,26 +138,6 @@ public class UserSessionTests
         session.User.Should().BeNull();
     }
 
-    private static LoginResponse CreateLoginResponse(
-        DateTimeOffset expiresAt)
-    {
-        return new LoginResponse
-        {
-            Token = "test-token",
-            ExpiresAt = expiresAt.UtcDateTime,
-            User = new AuthenticatedUser
-            {
-                Id = "admin-1",
-                UserName = "admin@gamehub.com",
-                Email = "admin@gamehub.com",
-                Roles = new[]
-                {
-                    "Admin"
-                }
-            }
-        };
-    }
-
     [Fact]
     public void Start_ShouldPreserveCurrentSession_WhenNewSessionIsInvalid()
     {
@@ -191,4 +171,25 @@ public class UserSessionTests
         session.ExpiresAt.Should().Be(Now.AddHours(2));
         session.User.Should().BeSameAs(validResponse.User);
     }
+
+    private static LoginResponse CreateLoginResponse(
+        DateTimeOffset expiresAt)
+    {
+        return new LoginResponse
+        {
+            Token = "test-token",
+            ExpiresAt = expiresAt.UtcDateTime,
+            User = new AuthenticatedUser
+            {
+                Id = "admin-1",
+                UserName = "admin@gamehub.com",
+                Email = "admin@gamehub.com",
+                Roles = new[]
+                {
+                    "Admin"
+                }
+            }
+        };
+    }
+
 }

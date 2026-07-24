@@ -1,0 +1,65 @@
+.access-denied-page {
+    display: grid;
+    min-height: calc(100vh - 12rem);
+    padding: 2rem 0;
+    place-items: center;
+}
+
+.access-denied-card {
+    width: min(100%, 38rem);
+    padding: clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    background: radial-gradient( circle at 50% 0%, rgba(255, 100, 124, 0.12), transparent 18rem ), var(--gh-bg-surface);
+    border: 1px solid rgba(255, 100, 124, 0.22);
+    border-radius: var(--gh-radius-lg);
+    box-shadow: var(--gh-shadow-md);
+}
+
+.access-denied-code {
+    display: block;
+    color: rgba(255, 100, 124, 0.18);
+    font-size: clamp(4.5rem, 15vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -0.07em;
+    line-height: 0.85;
+}
+
+.access-denied-eyebrow {
+    display: block;
+    margin-top: 2rem;
+    color: var(--gh-color-danger);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.access-denied-card h1 {
+    margin: 0.75rem 0 0;
+    color: var(--gh-text-primary);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.access-denied-card p {
+    max-width: 30rem;
+    margin: 1rem auto 0;
+    color: var(--gh-text-secondary);
+    line-height: 1.7;
+}
+
+.access-denied-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+@media (max-width: 640.98px) {
+    .access-denied-page {
+        min-height: 32rem;
+        padding: 1rem 0;
+    }
+
+    .access-denied-card {
+        padding: 2rem 1.25rem;
+    }
+}

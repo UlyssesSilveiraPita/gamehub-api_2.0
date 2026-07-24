@@ -1,6 +1,60 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
+﻿@using GameHub.Web.Services.Abstractions
+
+@inject IAuthenticationService AuthenticationService
+
+@if (!_sessionRestored)
+{
+    <div class="route-session-loader">
+        <LoadingIndicator Message="Restoring your session"
+                          Description="Preparing your secure GameHub experience." />
+    </div>
+}
+else
+{
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData"
+                                DefaultLayout="typeof(Layout.MainLayout)">
+
+                <Authorizing>
+                    <LoadingIndicator Message="Checking access"
+                                      Description="Validating your GameHub permissions." />
+                </Authorizing>
+
+                <NotAuthorized Context="authenticationState">
+                    @if (authenticationState.User.Identity?.IsAuthenticated
+                        == true)
+                    {
+                        <RedirectToAccessDenied />
+                    }
+                    else
+                    {
+                        <RedirectToLogin />
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+
+            <FocusOnNavigate RouteData="routeData"
+                             Selector="h1" />
+        </Found>
+    </Router>
+}
+
+@code {
+    private bool _sessionRestored;
+
+    protected override async Task OnAfterRenderAsync(
+        bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await AuthenticationService.RestoreSessionAsync();
+
+        _sessionRestored = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
